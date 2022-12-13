@@ -9,7 +9,7 @@ export function Footer() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Powered by{" "}
+        Thanks by{" "}
         <span className={styles.logo}>
           <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
         </span>
