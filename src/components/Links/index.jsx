@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import PropTypes from "prop-types";
 import classes from "./Links.module.css";
 
 export const Links = (props) => {
@@ -14,4 +14,14 @@ export const Links = (props) => {
       })}
     </div>
   );
+};
+
+Links.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      href: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };

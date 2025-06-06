@@ -1,22 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
-export const useBgColor = () => {
+
+const DEFAULT_COLOR_MAP = {
+  "/": "lightblue",
+  "/about": "beige",
+};
+
+export const useBgColor = (colorMap = DEFAULT_COLOR_MAP) => {
   const router = useRouter();
 
   const bgColor = useMemo(() => {
-    switch (router.pathname) {
-      case "/": {
-        return "lightblue";
-      }
-      case "/about": {
-        return "beige";
-      }
-
-      default: {
-        return "";
-      }
-    }
-  }, [router.pathname]);
+    return colorMap[router.pathname] || "";
+  }, [router.pathname, colorMap]);
 
   useEffect(() => {
     document.body.style.backgroundColor = bgColor;
@@ -24,4 +19,6 @@ export const useBgColor = () => {
       document.body.style.backgroundColor = "";
     };
   }, [bgColor]);
+
+  return bgColor;
 };
