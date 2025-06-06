@@ -1,4 +1,5 @@
-import classes from ".//Headline.module.css";
+import PropTypes from "prop-types";
+import classes from "./Headline.module.css";
 export const Headline = (props) => {
   return (
     <div>
@@ -9,4 +10,10 @@ export const Headline = (props) => {
       <button onClick={props.handleReduce}>減らす</button>
     </div>
   );
+};
+
+Headline.propTypes = {
+  page: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+  handleReduce: PropTypes.func.isRequired,
 };

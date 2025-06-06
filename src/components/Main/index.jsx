@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import PropTypes from "prop-types";
 import { Headline } from "../Headline";
 import { Links } from "../Links";
 import classes from "./Main.module.css";
@@ -21,7 +22,7 @@ const ITEMS = [
   },
   {
     href: "https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app",
-    title: "Deploy →LI",
+    title: "Deploy →",
     description:
       "Instantly deploy your Next.js site to a public URL with Vercel.",
   },
@@ -42,4 +43,8 @@ export const Main = (props) => {
       <Links items={items} />
     </main>
   );
+};
+
+Main.propTypes = {
+  page: PropTypes.string.isRequired,
 };
