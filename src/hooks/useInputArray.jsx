@@ -5,13 +5,15 @@ const DEFAULT_MAX_LENGTH = 5;
 export const useInputArray = (maxLength = DEFAULT_MAX_LENGTH) => {
   const [text, setText] = useState("");
   const [array, setArray] = useState([]);
+  const [error, setError] = useState("");
 
   const handleChange = useCallback((e) => {
     const value = e.target.value;
     if (value.length > maxLength) {
-      alert(`${maxLength}文字以内にしてください`);
+      setError(`${maxLength}文字以内にしてください`);
       return;
     }
+    setError("");
     setText(value);
   }, [maxLength]);
 
@@ -19,19 +21,19 @@ export const useInputArray = (maxLength = DEFAULT_MAX_LENGTH) => {
     const trimmedText = text.trim();
     
     if (!trimmedText) {
-      alert("テキストを入力してください");
+      setError("テキストを入力してください");
       return;
     }
     
-    setArray((prevArray) => {
-      if (prevArray.includes(trimmedText)) {
-        alert("同じ要素がすでに存在します。");
-        return prevArray;
-      }
-      setText("");
-      return [...prevArray, trimmedText];
-    });
-  }, [text]);
+    if (array.includes(trimmedText)) {
+      setError("同じ要素がすでに存在します。");
+      return;
+    }
 
-  return { text, array, handleAdd, handleChange };
+    setArray((prevArray) => [...prevArray, trimmedText]);
+    setText("");
+    setError("");
+  }, [text, array]);
+
+  return { text, array, error, handleAdd, handleChange };
 };
