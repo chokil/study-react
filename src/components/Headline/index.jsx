@@ -1,13 +1,15 @@
 import PropTypes from "prop-types";
 import classes from "./Headline.module.css";
-export const Headline = (props) => {
+export const Headline = ({ page, children, handleReduce }) => {
   return (
     <div>
-      <h1 className={classes.title}>{props.page} Page</h1>
+      <h1 className={classes.title}>{page} Page</h1>
       <p className={classes.description}>
-        アイテムの数は{props.children}個です。
+        アイテムの数は{children}個です。
       </p>
-      <button onClick={props.handleReduce}>減らす</button>
+      <button onClick={handleReduce} aria-label="アイテムを1つ減らす">
+        減らす
+      </button>
     </div>
   );
 };

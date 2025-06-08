@@ -1,7 +1,8 @@
+import { memo } from "react";
 import Image from "next/image";
 import classes from "./Footer.module.css";
 
-export const Footer = () => {
+export const Footer = memo(() => {
   return (
     <footer className={classes.footer}>
       <a
@@ -11,9 +12,9 @@ export const Footer = () => {
       >
         Thanks by{" "}
         <span className={classes.logo}>
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          <Image src="/vercel.svg" alt="Vercel Platform Logo" width={72} height={16} />
         </span>
       </a>
     </footer>
   );
-};
+});
