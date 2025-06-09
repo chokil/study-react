@@ -5,8 +5,12 @@ export const Counter = ({ count, isShow, handleClick, handleDisplay }) => {
   return (
     <div className={classes.counter}>
       {isShow ? <h2>{count}</h2> : null}
-      <button onClick={handleClick}>ボタン</button>
-      <button onClick={handleDisplay}>{isShow ? "非表示" : "表示"}</button>
+      <button onClick={handleClick} aria-label="カウントを増やす">
+        ボタン
+      </button>
+      <button onClick={handleDisplay} aria-label={isShow ? "カウントを非表示にする" : "カウントを表示する"}>
+        {isShow ? "非表示" : "表示"}
+      </button>
     </div>
   );
 };

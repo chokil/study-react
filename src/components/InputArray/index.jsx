@@ -2,17 +2,29 @@ import PropTypes from "prop-types";
 import classes from "./InputArray.module.css";
 
 export const InputArray = ({ text, array, handleChange, handleAdd }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleAdd();
+  };
+
   return (
     <div className={classes.inputArray}>
-      <input
-        type="text"
-        value={text}
-        onChange={handleChange}
-        className={classes.input}
-      />
-      <button onClick={handleAdd} className="btn-center">
-        追加
-      </button>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="text-input" className="sr-only">
+          テキストを入力
+        </label>
+        <input
+          id="text-input"
+          type="text"
+          value={text}
+          onChange={handleChange}
+          className={classes.input}
+          aria-label="追加するテキスト"
+        />
+        <button type="submit" className={classes.button}>
+          追加
+        </button>
+      </form>
       <ul className={classes.list}>
         {array.map((item) => (
           <li key={item}>{item}</li>
