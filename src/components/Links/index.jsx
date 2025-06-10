@@ -23,6 +23,8 @@ export const Links = memo((props) => {
   );
 });
 
+Links.displayName = "Links";
+
 Links.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
