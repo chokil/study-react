@@ -1,0 +1,98 @@
+import { createContext, useContext, useReducer, useCallback } from 'react';
+import PropTypes from 'prop-types';
+
+const AppContext = createContext();
+
+const initialState = {
+  theme: 'light',
+  notifications: [],
+  collaborators: [],
+  sharedCounter: 0,
+  isCollaborating: false,
+};
+
+const appReducer = (state, action) => {
+  switch (action.type) {
+    case 'TOGGLE_THEME':
+      return { ...state, theme: state.theme === 'light' ? 'dark' : 'light' };
+    
+    case 'ADD_NOTIFICATION':
+      return { 
+        ...state, 
+        notifications: [...state.notifications, { 
+          id: Date.now(), 
+          message: action.payload,
+          timestamp: new Date()
+        }]
+      };
+    
+    case 'REMOVE_NOTIFICATION':
+      return {
+        ...state,
+        notifications: state.notifications.filter(n => n.id !== action.payload)
+      };
+    
+    case 'ADD_COLLABORATOR':
+      return {
+        ...state,
+        collaborators: [...state.collaborators, action.payload]
+      };
+    
+    case 'REMOVE_COLLABORATOR':
+      return {
+        ...state,
+        collaborators: state.collaborators.filter(c => c.id !== action.payload)
+      };
+    
+    case 'UPDATE_SHARED_COUNTER':
+      return { ...state, sharedCounter: action.payload };
+    
+    case 'TOGGLE_COLLABORATION':
+      return { ...state, isCollaborating: !state.isCollaborating };
+    
+    default:
+      return state;
+  }
+};
+
+export const AppProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+
+  const toggleTheme = useCallback(() => {
+    dispatch({ type: 'TOGGLE_THEME' });
+  }, []);
+
+  const addNotification = useCallback((message) => {
+    dispatch({ type: 'ADD_NOTIFICATION', payload: message });
+  }, []);
+
+  const removeNotification = useCallback((id) => {
+    dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
+  }, []);
+
+  const value = {
+    state,
+    dispatch,
+    toggleTheme,
+    addNotification,
+    removeNotification
+  };
+
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  );
+};
+
+AppProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export const useApp = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useApp must be used within AppProvider');
+  }
+  return context;
+};
