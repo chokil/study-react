@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import { Headline } from "../Headline";
 import { Links } from "../Links";
+import { SuspenseDemo } from "../SuspenseDemo";
 import classes from "./Main.module.css";
 
 const ITEMS = [
@@ -40,6 +41,7 @@ export const Main = ({ page }) => {
       <Headline page={page} handleReduce={handleReduce}>
         <code className={classes.code}>{items.length}</code>
       </Headline>
+      <SuspenseDemo />
       <Links items={items} />
     </main>
   );

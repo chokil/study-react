@@ -4,15 +4,44 @@
   align-items: center;
   gap: 1rem;
   margin: 2rem 0;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .counter h2 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .counter button {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin: 0 0.5rem;
+}
+
+.counter button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.counter button:active {
+  transform: translateY(0);
 }
