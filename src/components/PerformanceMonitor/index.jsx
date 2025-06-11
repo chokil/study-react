@@ -2,14 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import classes from './PerformanceMonitor.module.css';
 
 export const PerformanceMonitor = () => {
-  const [renderCount, setRenderCount] = useState(0);
+  // useRef is used to avoid triggering re-renders when counting renders
+  const renderCount = useRef(0);
   const [fps, setFps] = useState(60);
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
 
-  useEffect(() => {
-    setRenderCount(prev => prev + 1);
-  });
+  // increment render count on every render without causing an update loop
+  renderCount.current += 1;
 
   useEffect(() => {
     let animationId;
@@ -44,7 +44,7 @@ export const PerformanceMonitor = () => {
       <div className={classes.stats}>
         <div className={classes.stat}>
           <span className={classes.label}>Renders:</span>
-          <span className={classes.value}>{renderCount}</span>
+          <span className={classes.value}>{renderCount.current}</span>
         </div>
         <div className={classes.stat}>
           <span className={classes.label}>FPS:</span>
