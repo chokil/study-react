@@ -22,3 +22,4 @@ export const LazyFeature = () => {
     </div>
   );
 };
+export default LazyFeature;
