@@ -1,0 +1,348 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.adminBadge {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.statistics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  justify-content: center;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #666;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.tab:hover {
+  color: #333;
+}
+
+.activeTab {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #dc3545;
+}
+
+.validateSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.manageSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.controls {
+  margin-bottom: 2rem;
+}
+
+.searchBox {
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #dc3545;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 0.5rem 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filterButton:hover {
+  background-color: #e9ecef;
+}
+
+.activeFilter {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+.activeFilter:hover {
+  background-color: #c82333;
+}
+
+.ticketGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1rem;
+}
+
+.noTickets {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+  margin: 2rem 0;
+}
+
+.analyticsSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.analyticsSection h2 {
+  font-size: 1.75rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.analyticsCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.analyticsCard h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.barChart {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.barItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.barLabel {
+  min-width: 80px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.barContainer {
+  flex: 1;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-in-out;
+}
+
+.activeBar {
+  background-color: #28a745;
+}
+
+.usedBar {
+  background-color: #6c757d;
+}
+
+.cancelledBar {
+  background-color: #dc3545;
+}
+
+.barValue {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.typeStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.typeStatItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.typeLabel {
+  font-weight: 500;
+  color: #333;
+}
+
+.typeCount {
+  font-weight: bold;
+  color: #0070f3;
+}
+
+.typePercentage {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.dailyStats {
+  text-align: center;
+}
+
+.todayHighlight {
+  background-color: #e7f3ff;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.todayLabel {
+  display: block;
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.todayValue {
+  display: block;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #0070f3;
+}
+
+.validationRate {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .statistics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .tabs {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  
+  .tab {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ticketGrid {
+    grid-template-columns: 1fr;
+  }
+}
