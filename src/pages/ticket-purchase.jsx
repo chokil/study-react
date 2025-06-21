@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
+import { Layout } from 'src/components/Layout';
 import styles from '../styles/TicketPurchase.module.css';
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
-import { Main } from '../components/Main';
 import { issueTicket, getTicketsByCustomer } from '../services/ticketService';
 import { TicketDisplay } from '../components/TicketDisplay';
 
@@ -84,15 +81,8 @@ export default function TicketPurchase() {
   const totalPrice = selectedTicketType ? selectedTicketType.price * formData.quantity : 0;
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>チケット購入 - Study React</title>
-        <meta name="description" content="イベントチケットを購入" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Header />
-      <Main>
+    <Layout title="チケット購入 - Study React">
+      <div className={styles.container}>
         <h1 className={styles.title}>チケット購入</h1>
         
         <div className={styles.tabs}>
@@ -260,8 +250,7 @@ export default function TicketPurchase() {
             )}
           </div>
         )}
-      </Main>
-      <Footer />
-    </div>
+      </div>
+    </Layout>
   );
 }

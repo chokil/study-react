@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import { Layout } from 'src/components/Layout';
 import styles from '../../styles/AdminTickets.module.css';
-import { Header } from '../../components/Header';
-import { Footer } from '../../components/Footer';
-import { Main } from '../../components/Main';
 import { TicketValidator } from '../../components/TicketValidator';
 import { TicketDisplay } from '../../components/TicketDisplay';
 import { getAllTickets, getTicketStatistics } from '../../services/ticketService';
@@ -64,15 +61,8 @@ export default function AdminTickets() {
   };
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>チケット管理 (管理者) - Study React</title>
-        <meta name="description" content="チケット管理システム - 管理者用" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Header />
-      <Main>
+    <Layout title="チケット管理 (管理者) - Study React">
+      <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>チケット管理システム</h1>
           <span className={styles.adminBadge}>管理者</span>
@@ -263,8 +253,7 @@ export default function AdminTickets() {
             </div>
           </div>
         )}
-      </Main>
-      <Footer />
-    </div>
+      </div>
+    </Layout>
   );
 }
