@@ -10,6 +10,33 @@ const generateQRCode = (ticketId) => {
   return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(ticketId)}`;
 };
 
+export const issueTicket = (eventName, eventDate, customerName, ticketType) => {
+  const ticketId = generateTicketId();
+  const newTicket = {
+    id: ticketId,
+    eventName,
+    eventDate,
+    customerName,
+    ticketType,
+    qrCode: generateQRCode(ticketId),
+    issuedAt: new Date().toISOString(),
+    status: 'active',
+    validatedAt: null,
+  };
+
+  const tickets = ticketService.getAllTickets();
+  tickets.push(newTicket);
+  ticketService.saveTickets(tickets);
+
+  return { success: true, ticket: newTicket };
+};
+
+export const getAllTickets = () => ticketService.getAllTickets();
+export const getTicketsByCustomer = (customerName) => ticketService.getTicketsByCustomer(customerName);
+export const getTicketStatistics = () => ticketService.getTicketStatistics();
+export const validateTicket = (ticketId) => ticketService.validateTicket(ticketId);
+export const cancelTicket = (ticketId) => ticketService.cancelTicket(ticketId);
+
 export const ticketService = {
   getAllTickets() {
     if (typeof window === 'undefined') return [];
@@ -128,5 +155,25 @@ export const ticketService = {
   clearAllTickets() {
     if (typeof window === 'undefined') return;
     localStorage.removeItem(TICKET_STORAGE_KEY);
+  },
+
+  getTicketsByCustomer(customerName) {
+    return this.getAllTickets().filter(t => t.customerName === customerName);
+  },
+
+  getTicketStatistics() {
+    const tickets = this.getAllTickets();
+    const today = new Date().toDateString();
+    
+    return {
+      total: tickets.length,
+      active: tickets.filter(t => t.status === 'active').length,
+      used: tickets.filter(t => t.status === 'used').length,
+      cancelled: tickets.filter(t => t.status === 'cancelled').length,
+      expired: tickets.filter(t => t.expiryDate && new Date(t.expiryDate) < new Date()).length,
+      validatedToday: tickets.filter(t => 
+        t.validatedAt && new Date(t.validatedAt).toDateString() === today
+      ).length
+    };
   }
 };

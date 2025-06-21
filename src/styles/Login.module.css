@@ -211,6 +211,14 @@
   text-decoration: underline;
 }
 
+.hint {
+  text-align: center;
+  margin-top: 1rem;
+  color: #999;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
 /* Dark mode styles */
 :global([data-theme="dark"]) .loginContainer {
   background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);

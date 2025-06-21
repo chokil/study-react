@@ -8,7 +8,8 @@ const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
   { href: "/about", label: "About" },
   { href: "/reservation", label: "予約", requireAuth: true },
-  { href: "/tickets", label: "チケット" },
+  { href: "/ticket-purchase", label: "チケット購入" },
+  { href: "/admin/tickets", label: "チケット管理", adminOnly: true },
 ];
 
 export const Header = memo(() => {
@@ -25,6 +26,9 @@ export const Header = memo(() => {
       <nav className={classes.nav}>
         {NAV_ITEMS.map((item) => {
           if (item.requireAuth && !state.user?.isLoggedIn) {
+            return null;
+          }
+          if (item.adminOnly && !state.user?.isAdmin) {
             return null;
           }
           return (
