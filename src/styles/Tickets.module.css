@@ -1,0 +1,164 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.tab:hover {
+  color: #2196F3;
+}
+
+.tab.active {
+  color: #2196F3;
+  font-weight: 500;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #2196F3;
+}
+
+.content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.management {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.statsOverview {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.statsOverview h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.stat {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat span {
+  display: block;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.stat strong {
+  font-size: 28px;
+  color: #333;
+}
+
+.ticketList {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filterBar h2 {
+  margin: 0;
+  color: #333;
+}
+
+.filter {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tickets {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.noTickets {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab {
+    flex: 1;
+    min-width: 100px;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .filterBar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+}
