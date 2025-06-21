@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
   { href: "/about", label: "About" },
   { href: "/reservation", label: "予約", requireAuth: true },
+  { href: "/tickets", label: "チケット" },
 ];
 
 export const Header = memo(() => {
