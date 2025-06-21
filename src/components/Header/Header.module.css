@@ -3,8 +3,9 @@
   height: 100px;
   border-bottom: 1px solid #eaeaea;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 2rem;
 }
 
 .anchor {
@@ -17,4 +18,70 @@
 .anchor:focus,
 .anchor:active {
   color: #0070f3;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.authSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userEmail {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.loginButton {
+  padding: 0.5rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.loginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.logoutButton {
+  padding: 0.5rem 1.5rem;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  color: #666;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Dark mode styles */
+:global([data-theme="dark"]) .header {
+  border-bottom-color: #4a5568;
+}
+
+:global([data-theme="dark"]) .userEmail {
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .logoutButton {
+  border-color: #4a5568;
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .logoutButton:hover {
+  border-color: #9f7aea;
+  color: #9f7aea;
 }

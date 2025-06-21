@@ -9,6 +9,7 @@ const initialState = {
   collaborators: [],
   sharedCounter: 0,
   isCollaborating: false,
+  user: null,
 };
 
 const appReducer = (state, action) => {
@@ -21,7 +22,8 @@ const appReducer = (state, action) => {
         ...state, 
         notifications: [...state.notifications, { 
           id: Date.now(), 
-          message: action.payload,
+          message: action.payload.message || action.payload,
+          type: action.payload.type || 'info',
           timestamp: new Date()
         }]
       };
@@ -49,6 +51,12 @@ const appReducer = (state, action) => {
     
     case 'TOGGLE_COLLABORATION':
       return { ...state, isCollaborating: !state.isCollaborating };
+    
+    case 'SET_USER':
+      return { ...state, user: action.payload };
+    
+    case 'LOGOUT':
+      return { ...state, user: null };
     
     default:
       return state;

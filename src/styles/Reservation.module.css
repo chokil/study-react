@@ -1,0 +1,626 @@
+.reservationContainer {
+  min-height: calc(100vh - 200px);
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Progress Bar */
+.progressBar {
+  display: flex;
+  justify-content: space-between;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  position: relative;
+}
+
+.progressBar::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 50px;
+  right: 50px;
+  height: 2px;
+  background: #e0e0e0;
+  z-index: -1;
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.progressStep span {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.progressStep.active span {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.progressStep p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.progressStep.active p {
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* Step Content */
+.stepContent {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stepTitle {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* Service Grid */
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.serviceCard {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid transparent;
+}
+
+.serviceCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+}
+
+.serviceIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.serviceCard h3 {
+  font-size: 1.3rem;
+  margin: 0 0 0.5rem;
+  color: #333;
+}
+
+.duration {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+  margin: 0;
+}
+
+/* Selected Service Display */
+.selectedService {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.changeButton {
+  margin-left: auto;
+  padding: 0.4rem 1rem;
+  background: none;
+  border: 1px solid #667eea;
+  border-radius: 5px;
+  color: #667eea;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.changeButton:hover {
+  background: #667eea;
+  color: white;
+}
+
+/* Date Time Selector */
+.dateTimeSelector {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dateSection,
+.timeSection {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dateSection label,
+.timeSection label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.dateDisplay {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* AI Recommendation */
+.aiRecommendation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+.aiIcon {
+  font-size: 1.5rem;
+}
+
+.aiRecommendation p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Time Slot Grid */
+.timeSlotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.8rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.timeSlot {
+  padding: 0.6rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-size: 0.9rem;
+}
+
+.timeSlot:hover:not(.unavailable) {
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+.timeSlot.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.timeSlot.unavailable {
+  background: #f5f5f5;
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.timeSlot.recommended {
+  border-color: #9f7aea;
+  box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.2);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff6b6b;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 10px;
+}
+
+/* Confirmation Card */
+.confirmationCard {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.confirmationItem {
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.confirmationItem:last-child {
+  border-bottom: none;
+}
+
+.confirmationItem label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.confirmationItem p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.priceDisplay {
+  font-size: 1.5rem !important;
+  color: #667eea !important;
+}
+
+.notesSection {
+  margin-top: 1.5rem;
+}
+
+.notesInput {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.notesInput:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.paymentInfo {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.paymentInfo p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.backButton,
+.nextButton,
+.confirmButton {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backButton {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.backButton:hover {
+  background: #e0e0e0;
+}
+
+.nextButton,
+.confirmButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  min-width: 150px;
+}
+
+.nextButton:hover:not(:disabled),
+.confirmButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.nextButton:disabled,
+.confirmButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.loadingSpinner::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Quick Actions */
+.quickActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.quickAction {
+  padding: 0.6rem 1.2rem;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.quickAction:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: #f8f9fa;
+}
+
+/* Dark Mode Styles */
+:global([data-theme="dark"]) .reservationContainer {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .stepTitle {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .serviceCard {
+  background: #2d3748;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .serviceCard h3 {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .duration {
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .selectedService {
+  background: #1a202c;
+}
+
+:global([data-theme="dark"]) .dateSection,
+:global([data-theme="dark"]) .timeSection {
+  background: #2d3748;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .dateSection label,
+:global([data-theme="dark"]) .timeSection label {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .dateInput {
+  background: #1a202c;
+  border-color: #4a5568;
+  color: white;
+}
+
+:global([data-theme="dark"]) .dateInput:focus {
+  border-color: #9f7aea;
+}
+
+:global([data-theme="dark"]) .aiRecommendation {
+  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+}
+
+:global([data-theme="dark"]) .aiRecommendation p {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .timeSlot {
+  background: #1a202c;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .timeSlot:hover:not(.unavailable) {
+  border-color: #9f7aea;
+}
+
+:global([data-theme="dark"]) .timeSlot.unavailable {
+  background: #2d3748;
+  color: #4a5568;
+}
+
+:global([data-theme="dark"]) .confirmationCard {
+  background: #2d3748;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .confirmationItem {
+  border-bottom-color: #4a5568;
+}
+
+:global([data-theme="dark"]) .confirmationItem label {
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .confirmationItem p {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .notesInput {
+  background: #1a202c;
+  border-color: #4a5568;
+  color: white;
+}
+
+:global([data-theme="dark"]) .notesInput:focus {
+  border-color: #9f7aea;
+}
+
+:global([data-theme="dark"]) .paymentInfo {
+  background: #1a202c;
+}
+
+:global([data-theme="dark"]) .paymentInfo p {
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .backButton {
+  background: #4a5568;
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .backButton:hover {
+  background: #2d3748;
+}
+
+:global([data-theme="dark"]) .quickAction {
+  border-color: #4a5568;
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .quickAction:hover {
+  border-color: #9f7aea;
+  color: #9f7aea;
+  background: #2d3748;
+}
+
+:global([data-theme="dark"]) .quickActions {
+  border-top-color: #4a5568;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dateTimeSelector {
+    grid-template-columns: 1fr;
+  }
+  
+  .serviceGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .timeSlotGrid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+  }
+  
+  .backButton,
+  .nextButton,
+  .confirmButton {
+    width: 100%;
+  }
+  
+  .quickActions {
+    flex-direction: column;
+  }
+}
