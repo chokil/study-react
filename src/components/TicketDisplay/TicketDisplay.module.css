@@ -1,0 +1,136 @@
+.ticketCard {
+  background: var(--card-background, #ffffff);
+  border: 3px solid;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.ticketCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.ticketHeader {
+  padding: 1rem 1.5rem;
+  background: var(--header-background, #f5f5f5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eventName {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ticketBody {
+  padding: 1.5rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.ticketInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--text-secondary, #666);
+  min-width: 100px;
+}
+
+.value {
+  color: var(--text-primary);
+}
+
+.ticketType {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color, #2196F3);
+}
+
+.qrSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--qr-background, #f9f9f9);
+  border-radius: 8px;
+}
+
+.qrCode {
+  width: 150px;
+  height: 150px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: white;
+}
+
+.qrLabel {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666);
+}
+
+.actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  padding: 0.5rem 1.5rem;
+  background: var(--danger-color, #f44336);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.cancelButton:hover {
+  background: var(--danger-hover, #d32f2f);
+}
+
+@media (max-width: 768px) {
+  .ticketBody {
+    flex-direction: column;
+  }
+  
+  .qrSection {
+    margin-top: 1rem;
+  }
+}
