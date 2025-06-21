@@ -4,6 +4,7 @@ import { InputArray } from "src/components/InputArray";
 import { AnimatedList } from "src/components/AnimatedList";
 import { CollaborativeCounter } from "src/components/CollaborativeCounter";
 import { Main } from "src/components/Main";
+import { ResponsiveGrid } from "src/components/ResponsiveGrid";
 import { useCounter } from "src/hooks/useCounter";
 import { useInputArray } from "src/hooks/useInputArray";
 import { useBgColor } from "src/hooks/useBgColor";
@@ -29,13 +30,13 @@ const About = () => {
   return (
     <Layout title="About page">
       <CollaborativeCounter />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+      <ResponsiveGrid>
         <div>
           <Counter {...counterProps} count={doubleCount} />
           <InputArray {...inputArray} />
         </div>
         <AnimatedList items={inputArray.array} onRemove={inputArray.handleRemove} />
-      </div>
+      </ResponsiveGrid>
       <Main page="about" />
     </Layout>
   );
