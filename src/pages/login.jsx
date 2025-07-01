@@ -66,11 +66,14 @@ const Login = () => {
       });
       
       // Store user info in context (simplified)
+      // Admin users have email ending with @admin.com for demo purposes
+      const isAdmin = formData.email.endsWith('@admin.com');
       dispatch({
         type: "SET_USER",
         payload: {
           email: formData.email,
-          isLoggedIn: true
+          isLoggedIn: true,
+          isAdmin: isAdmin
         }
       });
       
@@ -149,6 +152,10 @@ const Login = () => {
           <p className={classes.footer}>
             アカウントをお持ちでない方は
             <a href="#" className={classes.link}> 新規登録</a>
+          </p>
+          
+          <p className={classes.hint}>
+            ヒント: 管理者としてログインするには、メールアドレスを @admin.com で終わるようにしてください
           </p>
         </div>
       </div>
