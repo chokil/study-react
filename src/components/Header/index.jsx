@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/about", label: "About" },
   { href: "/reservation", label: "予約", requireAuth: true },
   { href: "/tickets", label: "チケット" },
+  { href: "/coupon", label: "クーポン" },
 ];
 
 export const Header = memo(() => {
