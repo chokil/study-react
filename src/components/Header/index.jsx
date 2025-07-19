@@ -6,8 +6,8 @@ import classes from "./Header.module.css";
 
 const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
-  { href: "/aria", label: "✨ AI Aria", special: true },
   { href: "/about", label: "About" },
+  { href: "/aria", label: "✨ AI Aria", special: true },
   { href: "/reservation", label: "予約", requireAuth: true },
   { href: "/ticket-purchase", label: "チケット購入" },
   { href: "/coupon", label: "クーポン" },
