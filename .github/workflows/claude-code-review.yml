@@ -40,7 +40,7 @@ jobs:
           # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
           # model: "claude-opus-4-20250514"
 
-direct_prompt: |
+　　　　　　　direct_prompt: |
             このプルリクエストをレビューし、包括的なフィードバックを日本語で提供してください。
 
             以下の点に重点を置いてください。
@@ -62,7 +62,7 @@ direct_prompt: |
           # - Potential bugs or issues
           # - Performance considerations
           # - Security concerns
-          #- Test coverage
+          # - Test coverage
             
           # Be constructive and helpful in your feedback.
 
