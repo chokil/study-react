@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 import classes from './TicketDisplay.module.css';
 
 export const TicketDisplay = ({ ticket, onCancel }) => {
@@ -92,10 +93,12 @@ export const TicketDisplay = ({ ticket, onCancel }) => {
 
         {ticket.status === 'active' && (
           <div className={classes.qrSection}>
-            <img 
+            <Image 
               src={ticket.qrCode} 
               alt="QR Code"
               className={classes.qrCode}
+              width={150}
+              height={150}
             />
             <p className={classes.qrLabel}>入場用QRコード</p>
           </div>
