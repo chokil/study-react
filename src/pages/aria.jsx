@@ -261,9 +261,11 @@ const Aria = () => {
 
   // Particle rendering
   const drawParticles = useCallback((ctx) => {
-    particles.forEach((particle, index) => {
+    const updatedParticles = [];
+    
+    particles.forEach((particle) => {
       if (particle.life <= 0) {
-        particles.splice(index, 1);
+        // Skip particles that have expired (effectively removing them)
         return;
       }
       
@@ -297,13 +299,29 @@ const Aria = () => {
       
       ctx.restore();
       
-      // Update particle
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-      particle.life -= particle.decay;
-      particle.rotation += 0.1;
+      // Update particle properties and add to updated array
+      const updatedParticle = {
+        ...particle,
+        x: particle.x + particle.vx,
+        y: particle.y + particle.vy,
+        life: particle.life - particle.decay,
+        rotation: particle.rotation + 0.1
+      };
+      
+      updatedParticles.push(updatedParticle);
     });
-  }, [particles]);
+    
+    // Update particles state immutably if there are changes
+    if (updatedParticles.length !== particles.length || 
+        updatedParticles.some((p, i) => particles[i] && (
+          p.x !== particles[i].x || 
+          p.y !== particles[i].y || 
+          p.life !== particles[i].life || 
+          p.rotation !== particles[i].rotation
+        ))) {
+      setParticles(updatedParticles);
+    }
+  }, [particles, setParticles]);
 
   // Main animation loop
   const animate = useCallback(() => {
