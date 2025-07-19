@@ -153,7 +153,7 @@ export const ticketService = {
         new Date(t.validatedAt).toDateString() === today
       ).length,
       byType: tickets.reduce((acc, ticket) => {
-        const type = ticket.ticketType || 'general';
+        const type = ticket.typeName || 'general';
         acc[type] = (acc[type] || 0) + 1;
         return acc;
       }, {})
