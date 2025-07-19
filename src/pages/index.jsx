@@ -14,18 +14,12 @@ import { useEffect } from "react";
 const Home = () => {
   const counter = useCounter();
   const inputArray = useInputArray();
-  const { state } = useApp();
+  const { setPageBackground } = useApp();
   useBgColor();
 
   useEffect(() => {
-    if (state.theme === 'dark') {
-      document.body.style.backgroundColor = '#1a202c';
-      document.body.style.color = 'white';
-    } else {
-      document.body.style.backgroundColor = 'lightblue';
-      document.body.style.color = 'black';
-    }
-  }, [state.theme]);
+    setPageBackground('home');
+  }, [setPageBackground]);
 
   return (
     <Layout title="Index page">

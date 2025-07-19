@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 const AppContext = createContext();
@@ -66,6 +66,20 @@ const appReducer = (state, action) => {
 export const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
+  // Apply theme class to body
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.className = document.body.className
+        .replace(/theme-\w+/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      if (state.theme) {
+        document.body.classList.add(`theme-${state.theme}`);
+      }
+    }
+  }, [state.theme]);
+
   const toggleTheme = useCallback(() => {
     dispatch({ type: 'TOGGLE_THEME' });
   }, []);
@@ -78,12 +92,28 @@ export const AppProvider = ({ children }) => {
     dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
   }, []);
 
+  // Helper to set page background class
+  const setPageBackground = useCallback((pageName) => {
+    if (typeof document !== 'undefined') {
+      // Remove existing bg-* classes
+      document.body.className = document.body.className
+        .replace(/bg-\w+/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      if (pageName) {
+        document.body.classList.add(`bg-${pageName}`);
+      }
+    }
+  }, []);
+
   const value = {
     state,
     dispatch,
     toggleTheme,
     addNotification,
-    removeNotification
+    removeNotification,
+    setPageBackground
   };
 
   return (

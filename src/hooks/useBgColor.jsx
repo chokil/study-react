@@ -1,24 +1,28 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
+import { useApp } from "src/contexts/AppContext";
 
-const DEFAULT_COLOR_MAP = {
-  "/": "lightblue",
-  "/about": "beige",
+const DEFAULT_PAGE_MAP = {
+  "/": "home",
+  "/about": "about",
 };
 
-export const useBgColor = (colorMap = DEFAULT_COLOR_MAP) => {
+export const useBgColor = (pageMap = DEFAULT_PAGE_MAP) => {
   const router = useRouter();
+  const { setPageBackground } = useApp();
 
-  const bgColor = useMemo(() => {
-    return colorMap[router.pathname] || "";
-  }, [router.pathname, colorMap]);
+  const pageName = useMemo(() => {
+    return pageMap[router.pathname] || null;
+  }, [router.pathname, pageMap]);
 
   useEffect(() => {
-    document.body.style.backgroundColor = bgColor;
+    if (pageName && setPageBackground) {
+      setPageBackground(pageName);
+    }
     return () => {
-      document.body.style.backgroundColor = "";
+      // Cleanup is handled by the context
     };
-  }, [bgColor]);
+  }, [pageName, setPageBackground]);
 
-  return bgColor;
+  return pageName;
 };

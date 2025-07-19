@@ -1,0 +1,39 @@
+.errorBoundary {
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ff6b6b;
+  border-radius: 8px;
+  background-color: #ffe0e0;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 10px 0;
+  color: #c92a2a;
+}
+
+.message {
+  margin: 0 0 15px 0;
+  color: #495057;
+}
+
+.reloadButton {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.reloadButton:hover {
+  background-color: #ff5252;
+}
+
+.reloadButton:focus {
+  outline: 2px solid #c92a2a;
+  outline-offset: 2px;
+}
