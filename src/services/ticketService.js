@@ -10,33 +10,6 @@ const generateQRCode = (ticketId) => {
   return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(ticketId)}`;
 };
 
-export const issueTicket = (eventName, eventDate, customerName, ticketType) => {
-  const ticketId = generateTicketId();
-  const newTicket = {
-    id: ticketId,
-    eventName,
-    eventDate,
-    customerName,
-    ticketType,
-    qrCode: generateQRCode(ticketId),
-    issuedAt: new Date().toISOString(),
-    status: 'active',
-    validatedAt: null,
-  };
-
-  const tickets = ticketService.getAllTickets();
-  tickets.push(newTicket);
-  ticketService.saveTickets(tickets);
-
-  return { success: true, ticket: newTicket };
-};
-
-export const getAllTickets = () => ticketService.getAllTickets();
-export const getTicketsByCustomer = (customerName) => ticketService.getTicketsByCustomer(customerName);
-export const getTicketStatistics = () => ticketService.getTicketStatistics();
-export const validateTicket = (ticketId) => ticketService.validateTicket(ticketId);
-export const cancelTicket = (ticketId) => ticketService.cancelTicket(ticketId);
-
 export const ticketService = {
   getAllTickets() {
     if (typeof window === 'undefined') return [];
@@ -177,3 +150,30 @@ export const ticketService = {
     };
   }
 };
+
+export const issueTicket = (eventName, eventDate, customerName, ticketType) => {
+  const ticketId = generateTicketId();
+  const newTicket = {
+    id: ticketId,
+    eventName,
+    eventDate,
+    customerName,
+    ticketType,
+    qrCode: generateQRCode(ticketId),
+    issuedAt: new Date().toISOString(),
+    status: 'active',
+    validatedAt: null,
+  };
+
+  const tickets = ticketService.getAllTickets();
+  tickets.push(newTicket);
+  ticketService.saveTickets(tickets);
+
+  return { success: true, ticket: newTicket };
+};
+
+export const getAllTickets = () => ticketService.getAllTickets();
+export const getTicketsByCustomer = (customerName) => ticketService.getTicketsByCustomer(customerName);
+export const getTicketStatistics = () => ticketService.getTicketStatistics();
+export const validateTicket = (ticketId) => ticketService.validateTicket(ticketId);
+export const cancelTicket = (ticketId) => ticketService.cancelTicket(ticketId);
