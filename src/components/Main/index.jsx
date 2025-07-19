@@ -7,6 +7,11 @@ import classes from "./Main.module.css";
 
 const ITEMS = [
   {
+    href: "/aria",
+    title: "✨ AI コンパニオン Aria →",
+    description: "アニメ風美少女AIとチャット！最新技術でVTuberよりもスムーズなアニメーション体験",
+  },
+  {
     href: "https://nextjs.org/docs",
     title: "Documentation →",
     description: "Find in-depth information about Next.js features and API.",
