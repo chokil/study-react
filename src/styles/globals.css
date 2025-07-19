@@ -87,11 +87,38 @@ body {
   animation: fadeIn 0.5s ease forwards;
 }
 
+/* Theme classes for consistent styling */
+body.theme-light {
+  background-color: lightblue;
+  color: black;
+}
+
+body.theme-dark {
+  background-color: #1a202c;
+  color: white;
+}
+
+/* Page-specific background colors */
+body.bg-home {
+  background-color: lightblue;
+}
+
+body.bg-about {
+  background-color: beige;
+}
+
+/* Theme overrides page backgrounds when active */
+body.theme-dark.bg-home,
+body.theme-dark.bg-about {
+  background-color: #1a202c;
+  color: white;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
-  body {
+  body:not(.theme-light):not(.theme-dark) {
     color: white;
     background: black;
   }

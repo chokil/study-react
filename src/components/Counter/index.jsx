@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classes from "./Counter.module.css";
 
 const CounterComponent = ({ count, isShow, handleClick, handleDisplay }) => {
-  const handleKeyPress = (handler) => (e) => {
+  const handleKeyDown = (handler) => (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handler();
@@ -15,14 +15,14 @@ const CounterComponent = ({ count, isShow, handleClick, handleDisplay }) => {
       {isShow ? <h2 tabIndex="0" aria-live="polite">{count}</h2> : null}
       <button 
         onClick={handleClick} 
-        onKeyPress={handleKeyPress(handleClick)}
+        onKeyDown={handleKeyDown(handleClick)}
         aria-label="カウントを増やす"
       >
         ボタン
       </button>
       <button 
         onClick={handleDisplay} 
-        onKeyPress={handleKeyPress(handleDisplay)}
+        onKeyDown={handleKeyDown(handleDisplay)}
         aria-label={isShow ? "カウントを非表示にする" : "カウントを表示する"}
       >
         {isShow ? "非表示" : "表示"}

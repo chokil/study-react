@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classes from './ErrorBoundary.module.css';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -18,27 +19,12 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{
-          padding: '20px',
-          margin: '20px',
-          border: '1px solid #ff6b6b',
-          borderRadius: '8px',
-          backgroundColor: '#ffe0e0',
-          textAlign: 'center'
-        }}>
-          <h2>エラーが発生しました</h2>
-          <p>申し訳ございません。予期しないエラーが発生しました。</p>
+        <div className={classes.errorBoundary}>
+          <h2 className={classes.title}>エラーが発生しました</h2>
+          <p className={classes.message}>申し訳ございません。予期しないエラーが発生しました。</p>
           <button
             onClick={() => window.location.reload()}
-            style={{
-              marginTop: '10px',
-              padding: '10px 20px',
-              backgroundColor: '#ff6b6b',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
+            className={classes.reloadButton}
           >
             ページを再読み込み
           </button>
