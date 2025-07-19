@@ -1,0 +1,490 @@
+/* AI Companion Aria - Advanced Anime Style */
+.ariaContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, 
+    #667eea 0%, 
+    #764ba2 25%, 
+    #f093fb 50%, 
+    #f5576c 75%, 
+    #4facfe 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  padding: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ariaContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: floatingLights 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes floatingLights {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(120deg); }
+  66% { transform: translateY(5px) rotate(240deg); }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500, #ff6b9d);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGlow 3s ease-in-out infinite;
+  text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+  margin: 0;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 10px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 300;
+}
+
+@keyframes titleGlow {
+  0%, 100% { 
+    background-position: 0% 50%;
+    transform: scale(1);
+  }
+  50% { 
+    background-position: 100% 50%;
+    transform: scale(1.05);
+  }
+}
+
+.mainContent {
+  display: flex;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.characterSection {
+  flex: 1;
+  max-width: 600px;
+}
+
+.canvasContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.characterCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 20px;
+}
+
+.startOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+}
+
+.startButton {
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500);
+  background-size: 300% 300%;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: buttonPulse 2s ease-in-out infinite;
+  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.startButton:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.6);
+  background-position: 100% 50%;
+}
+
+@keyframes buttonPulse {
+  0%, 100% { 
+    background-position: 0% 50%;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+  }
+  50% { 
+    background-position: 100% 50%;
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+  }
+}
+
+.emotionControls {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.emotionControls p {
+  color: white;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.emotionButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.emotionButton {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  backdrop-filter: blur(5px);
+}
+
+.emotionButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+}
+
+.emotionButton.active {
+  background: linear-gradient(45deg, #ff6b9d, #c44569);
+  border-color: #ff6b9d;
+  box-shadow: 0 5px 20px rgba(255, 107, 157, 0.5);
+  transform: translateY(-2px);
+}
+
+.chatSection {
+  flex: 1;
+  max-width: 500px;
+}
+
+.chatContainer {
+  height: 500px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 157, 0.5);
+  border-radius: 3px;
+}
+
+.message {
+  display: flex;
+  max-width: 80%;
+}
+
+.message.user {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.message.aria {
+  justify-content: flex-start;
+  margin-right: auto;
+}
+
+.messageContent {
+  padding: 12px 18px;
+  border-radius: 20px;
+  word-wrap: break-word;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.message.user .messageContent {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border-bottom-right-radius: 5px;
+}
+
+.message.aria .messageContent {
+  background: linear-gradient(45deg, #ff6b9d, #c44569);
+  color: white;
+  border-bottom-left-radius: 5px;
+}
+
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 18px;
+  background: linear-gradient(45deg, #ff6b9d, #c44569);
+  border-radius: 20px;
+  border-bottom-left-radius: 5px;
+}
+
+.typing span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  animation: typingDots 1.4s ease-in-out infinite both;
+}
+
+.typing span:nth-child(1) { animation-delay: -0.32s; }
+.typing span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingDots {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.suggestedMessages {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestionButton {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  backdrop-filter: blur(5px);
+}
+
+.suggestionButton:hover {
+  background: rgba(255, 107, 157, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(255, 107, 157, 0.3);
+}
+
+.inputContainer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 10px;
+}
+
+.messageInput {
+  flex: 1;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  color: white;
+  font-size: 1rem;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.messageInput::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.messageInput:focus {
+  outline: none;
+  border-color: #ff6b9d;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+}
+
+.sendButton {
+  padding: 12px 24px;
+  background: linear-gradient(45deg, #ff6b9d, #c44569);
+  border: none;
+  border-radius: 25px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+}
+
+.sendButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+  background: linear-gradient(45deg, #c44569, #ff6b9d);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .mainContent {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .characterSection,
+  .chatSection {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .ariaContainer {
+    padding: 10px;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .canvasContainer,
+  .chatContainer {
+    height: 400px;
+  }
+  
+  .emotionButtons {
+    justify-content: center;
+  }
+  
+  .mainContent {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .canvasContainer,
+  .chatContainer {
+    height: 350px;
+  }
+  
+  .startButton {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+  }
+  
+  .inputContainer {
+    flex-direction: column;
+  }
+  
+  .sendButton {
+    width: 100%;
+  }
+}
+
+/* Dark theme compatibility */
+:global([data-theme="dark"]) .ariaContainer {
+  /* Enhanced for dark theme */
+}
+
+/* Additional magical effects */
+.ariaContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(2px 2px at 100px 200px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 300px 100px, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(2px 2px at 500px 300px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 150px 400px, rgba(255, 255, 255, 0.3), transparent);
+  animation: sparkles 8s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes sparkles {
+  0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}

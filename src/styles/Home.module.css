@@ -1,3 +1,297 @@
 .container {
   padding: 0 2rem;
 }
+
+/* Featured AI Companion Section */
+.featuredSection {
+  margin: 40px 0;
+  padding: 0 20px;
+}
+
+.ariaCard {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  background: linear-gradient(135deg, 
+    rgba(255, 107, 157, 0.1) 0%, 
+    rgba(196, 69, 105, 0.1) 25%, 
+    rgba(248, 181, 0, 0.1) 50%, 
+    rgba(255, 107, 157, 0.1) 100%
+  );
+  border-radius: 25px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  box-shadow: 
+    0 20px 40px rgba(255, 107, 157, 0.1),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ariaCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(255, 107, 157, 0.05) 50%, 
+    transparent 70%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.ariaContent {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.ariaTitle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGradient 3s ease-in-out infinite;
+  margin: 0 0 20px 0;
+  text-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+}
+
+@keyframes titleGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.ariaDescription {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #4a5568;
+  margin: 0 0 25px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ariaFeatures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 0 0 30px 0;
+}
+
+.feature {
+  padding: 8px 16px;
+  background: rgba(255, 107, 157, 0.1);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #c44569;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.feature:hover {
+  background: rgba(255, 107, 157, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 157, 0.2);
+}
+
+.ariaButton {
+  display: inline-block;
+  padding: 15px 30px;
+  background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500);
+  background-size: 300% 300%;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+  transition: all 0.3s ease;
+  animation: buttonGlow 2s ease-in-out infinite;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ariaButton:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+  background-position: 100% 50%;
+}
+
+@keyframes buttonGlow {
+  0%, 100% { 
+    background-position: 0% 50%;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+  }
+  50% { 
+    background-position: 100% 50%;
+    box-shadow: 0 15px 35px rgba(255, 107, 157, 0.5);
+  }
+}
+
+.ariaPreview {
+  flex: 0 0 300px;
+  position: relative;
+}
+
+.previewCanvas {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, 
+    rgba(255, 107, 157, 0.2) 0%, 
+    rgba(196, 69, 105, 0.2) 50%, 
+    rgba(248, 181, 0, 0.2) 100%
+  );
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 107, 157, 0.3);
+  box-shadow: 
+    0 20px 40px rgba(255, 107, 157, 0.2),
+    inset 0 0 40px rgba(255, 255, 255, 0.1);
+}
+
+.previewCanvas::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent, 
+    rgba(255, 107, 157, 0.3), 
+    transparent 30%
+  );
+  animation: rotate 4s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes rotate {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.animatedIcon {
+  font-size: 4rem;
+  animation: float 2s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 10px 20px rgba(255, 107, 157, 0.5));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-10px) scale(1.1); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .ariaCard {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+  }
+  
+  .ariaPreview {
+    flex: none;
+  }
+  
+  .previewCanvas {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .animatedIcon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .featuredSection {
+    margin: 20px 0;
+    padding: 0 10px;
+  }
+  
+  .ariaCard {
+    padding: 20px;
+  }
+  
+  .ariaTitle {
+    font-size: 2rem;
+  }
+  
+  .ariaDescription {
+    font-size: 1rem;
+  }
+  
+  .ariaFeatures {
+    justify-content: center;
+  }
+  
+  .previewCanvas {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .animatedIcon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ariaTitle {
+    font-size: 1.5rem;
+  }
+  
+  .ariaButton {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+  
+  .feature {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+  
+  .previewCanvas {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Dark theme compatibility */
+:global([data-theme="dark"]) .ariaDescription {
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .ariaCard {
+  background: linear-gradient(135deg, 
+    rgba(255, 107, 157, 0.15) 0%, 
+    rgba(196, 69, 105, 0.15) 25%, 
+    rgba(248, 181, 0, 0.15) 50%, 
+    rgba(255, 107, 157, 0.15) 100%
+  );
+  border-color: rgba(255, 107, 157, 0.3);
+}
+
+:global([data-theme="dark"]) .feature {
+  color: #ff6b9d;
+  background: rgba(255, 107, 157, 0.15);
+}

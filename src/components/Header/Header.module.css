@@ -20,6 +20,28 @@
   color: #0070f3;
 }
 
+.specialLink {
+  background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500);
+  background-size: 300% 300%;
+  color: white !important;
+  border-radius: 25px;
+  font-weight: bold;
+  animation: gradientShift 3s ease-in-out infinite;
+  box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+  transition: all 0.3s ease;
+}
+
+.specialLink:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+  color: white !important;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 .nav {
   display: flex;
   gap: 1rem;

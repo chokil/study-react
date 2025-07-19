@@ -6,6 +6,7 @@ import classes from "./Header.module.css";
 
 const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
+  { href: "/aria", label: "✨ AI Aria", special: true },
   { href: "/about", label: "About" },
   { href: "/reservation", label: "予約", requireAuth: true },
   { href: "/ticket-purchase", label: "チケット購入" },
@@ -35,7 +36,11 @@ export const Header = memo(() => {
             return null;
           }
           return (
-            <Link key={item.href} href={item.href} className={classes.anchor}>
+            <Link 
+              key={item.href} 
+              href={item.href} 
+              className={`${classes.anchor} ${item.special ? classes.specialLink : ''}`}
+            >
               {item.label}
             </Link>
           );
