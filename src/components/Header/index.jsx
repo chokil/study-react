@@ -8,8 +8,12 @@ const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
   { href: "/about", label: "About" },
   { href: "/reservation", label: "予約", requireAuth: true },
-  { href: "/tickets", label: "チケット" },
+  { href: "/ticket-purchase", label: "チケット購入" },
   { href: "/coupon", label: "クーポン" },
+];
+
+const ADMIN_NAV_ITEMS = [
+  { href: "/admin/tickets", label: "チケット管理" },
 ];
 
 export const Header = memo(() => {
@@ -20,6 +24,8 @@ export const Header = memo(() => {
     dispatch({ type: 'LOGOUT' });
     router.push('/');
   };
+
+  const isAdmin = state.user?.email?.endsWith('@admin.com');
   
   return (
     <header className={classes.header}>
@@ -34,6 +40,11 @@ export const Header = memo(() => {
             </Link>
           );
         })}
+        {isAdmin && ADMIN_NAV_ITEMS.map((item) => (
+          <Link key={item.href} href={item.href} className={`${classes.anchor} ${classes.adminLink}`}>
+            {item.label}
+          </Link>
+        ))}
       </nav>
       <div className={classes.authSection}>
         {state.user?.isLoggedIn ? (

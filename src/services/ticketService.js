@@ -128,5 +128,35 @@ export const ticketService = {
   clearAllTickets() {
     if (typeof window === 'undefined') return;
     localStorage.removeItem(TICKET_STORAGE_KEY);
+  },
+
+  getTicketsByCustomer(customerName) {
+    if (!customerName) return [];
+    const tickets = this.getAllTickets();
+    return tickets.filter(t => 
+      t.customerName && t.customerName.toLowerCase().includes(customerName.toLowerCase())
+    );
+  },
+
+  getTicketStats() {
+    const tickets = this.getAllTickets();
+    const today = new Date().toDateString();
+    
+    return {
+      total: tickets.length,
+      active: tickets.filter(t => t.status === 'active').length,
+      used: tickets.filter(t => t.status === 'used').length,
+      cancelled: tickets.filter(t => t.status === 'cancelled').length,
+      todayValidated: tickets.filter(t => 
+        t.status === 'used' && 
+        t.validatedAt && 
+        new Date(t.validatedAt).toDateString() === today
+      ).length,
+      byType: tickets.reduce((acc, ticket) => {
+        const type = ticket.ticketType || 'general';
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+      }, {})
+    };
   }
 };

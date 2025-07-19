@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import classes from './TicketDisplay.module.css';
 
-export const TicketDisplay = ({ ticket, onCancel }) => {
+export const TicketDisplay = ({ ticket, onCancel, showQRCode = true, compact = false }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ja-JP', {
       year: 'numeric',
@@ -33,7 +33,7 @@ export const TicketDisplay = ({ ticket, onCancel }) => {
 
   return (
     <div 
-      className={classes.ticketCard}
+      className={`${classes.ticketCard} ${compact ? classes.compact : ''}`}
       style={{ borderColor: ticket.color || '#2196F3' }}
     >
       <div className={classes.ticketHeader}>
@@ -68,37 +68,41 @@ export const TicketDisplay = ({ ticket, onCancel }) => {
             <span className={classes.value}>{ticket.customerName}</span>
           </div>
           
-          <div className={classes.infoRow}>
-            <span className={classes.label}>イベント日:</span>
-            <span className={classes.value}>{formatDate(ticket.eventDate)}</span>
-          </div>
-          
-          <div className={classes.infoRow}>
-            <span className={classes.label}>価格:</span>
-            <span className={classes.price}>¥{ticket.price.toLocaleString()}</span>
-          </div>
-          
-          <div className={classes.infoRow}>
-            <span className={classes.label}>発券日時:</span>
-            <span className={classes.value}>{formatDate(ticket.issuedAt)}</span>
-          </div>
-          
-          {ticket.validatedAt && (
-            <div className={classes.infoRow}>
-              <span className={classes.label}>使用日時:</span>
-              <span className={classes.value}>{formatDate(ticket.validatedAt)}</span>
-            </div>
+          {!compact && (
+            <>
+              <div className={classes.infoRow}>
+                <span className={classes.label}>イベント日:</span>
+                <span className={classes.value}>{formatDate(ticket.eventDate)}</span>
+              </div>
+              
+              <div className={classes.infoRow}>
+                <span className={classes.label}>価格:</span>
+                <span className={classes.price}>¥{ticket.price.toLocaleString()}</span>
+              </div>
+              
+              <div className={classes.infoRow}>
+                <span className={classes.label}>発券日時:</span>
+                <span className={classes.value}>{formatDate(ticket.issuedAt)}</span>
+              </div>
+              
+              {ticket.validatedAt && (
+                <div className={classes.infoRow}>
+                  <span className={classes.label}>使用日時:</span>
+                  <span className={classes.value}>{formatDate(ticket.validatedAt)}</span>
+                </div>
+              )}
+            </>
           )}
         </div>
 
-        {ticket.status === 'active' && (
+        {showQRCode && ticket.status === 'active' && (
           <div className={classes.qrSection}>
             <Image 
               src={ticket.qrCode} 
               alt="QR Code"
               className={classes.qrCode}
-              width={150}
-              height={150}
+              width={compact ? 100 : 150}
+              height={compact ? 100 : 150}
             />
             <p className={classes.qrLabel}>入場用QRコード</p>
           </div>
@@ -134,4 +138,6 @@ TicketDisplay.propTypes = {
     validatedAt: PropTypes.string,
   }).isRequired,
   onCancel: PropTypes.func,
+  showQRCode: PropTypes.bool,
+  compact: PropTypes.bool,
 };
