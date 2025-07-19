@@ -39,8 +39,9 @@
 
 .subtitle {
   text-align: center;
-  color: #666;
+  color: #4a5568;
   margin-bottom: 2rem;
+  font-weight: 500;
 }
 
 .form {
@@ -160,7 +161,7 @@
   position: relative;
   padding: 0 1rem;
   background: white;
-  color: #666;
+  color: #4a5568;
   font-size: 0.9rem;
 }
 
@@ -195,7 +196,7 @@
 .footer {
   text-align: center;
   margin-top: 2rem;
-  color: #666;
+  color: #4a5568;
   font-size: 0.9rem;
 }
 
