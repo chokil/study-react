@@ -213,54 +213,54 @@
 }
 
 /* Dark mode styles */
-:global([data-theme="dark"]) .loginContainer {
+:global(.theme-dark) .loginContainer {
   background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
 }
 
-:global([data-theme="dark"]) .loginBox {
+:global(.theme-dark) .loginBox {
   background: #2d3748;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-:global([data-theme="dark"]) .subtitle {
+:global(.theme-dark) .subtitle {
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .label {
+:global(.theme-dark) .label {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .input {
+:global(.theme-dark) .input {
   background: #1a202c;
   border-color: #4a5568;
   color: white;
 }
 
-:global([data-theme="dark"]) .input:focus {
+:global(.theme-dark) .input:focus {
   background: #2d3748;
   border-color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .divider span {
+:global(.theme-dark) .divider span {
   background: #2d3748;
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .divider::before {
+:global(.theme-dark) .divider::before {
   background: #4a5568;
 }
 
-:global([data-theme="dark"]) .socialButton {
+:global(.theme-dark) .socialButton {
   background: #1a202c;
   border-color: #4a5568;
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .socialButton:hover {
+:global(.theme-dark) .socialButton:hover {
   background: #2d3748;
   border-color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .footer {
+:global(.theme-dark) .footer {
   color: #a0aec0;
 }
