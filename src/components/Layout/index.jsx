@@ -15,8 +15,10 @@ export const Layout = ({ children, title = "Study React App" }) => {
         <meta property="og:title" content={title} />
         <meta property="og:description" content="Reactの学習用アプリケーション" />
         <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ja_JP" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : ''} />
+        <html lang="ja" />
       </Head>
       <Header />
       <main role="main" className={classes.main}>
