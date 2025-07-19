@@ -94,18 +94,61 @@
   flex-direction: column;
   cursor: pointer;
   padding: 8px;
+  background: none;
+  border: none;
   gap: 3px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.hamburger:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.hamburger:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .hamburger span {
+  display: block;
   width: 20px;
   height: 2px;
   background-color: #4a5568;
   transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Hamburger line specific styles */
+.lineTop {
+  transform: translateY(-6px);
+}
+
+.lineMiddle {
+  /* No transform for middle line */
+}
+
+.lineBottom {
+  transform: translateY(6px);
+}
+
+/* Hamburger animation when open */
+.hamburger.open .lineTop {
+  transform: rotate(45deg) translateY(0);
+}
+
+.hamburger.open .lineMiddle {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.hamburger.open .lineBottom {
+  transform: rotate(-45deg) translateY(0);
 }
 
 .mobileNav {
-  display: none;
   position: absolute;
   top: 100%;
   left: 0;
@@ -115,10 +158,18 @@
   flex-direction: column;
   z-index: 1000;
   padding: 1rem;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
 }
 
 .mobileNav.open {
-  display: flex;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
 }
 
 .mobileNavItem {
@@ -127,6 +178,17 @@
   text-decoration: none;
   color: inherit;
   font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+.mobileNavItem:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  color: #667eea;
+}
+
+.mobileNavItem:hover {
+  color: #667eea;
 }
 
 .mobileNavItem:last-child {
@@ -199,6 +261,19 @@
 /* Dark mode mobile styles */
 :global([data-theme="dark"]) .hamburger span {
   background-color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .hamburger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .hamburger:focus {
+  outline-color: #9f7aea;
+}
+
+:global([data-theme="dark"]) .mobileNavItem:focus,
+:global([data-theme="dark"]) .mobileNavItem:hover {
+  color: #9f7aea;
 }
 
 :global([data-theme="dark"]) .mobileNav {

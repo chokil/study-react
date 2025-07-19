@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useApp } from "src/contexts/AppContext";
@@ -21,6 +21,7 @@ export const Header = memo(() => {
   const router = useRouter();
   const { state, dispatch } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileNavRef = useRef(null);
   
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
@@ -32,11 +33,52 @@ export const Header = memo(() => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleMobileMenuToggle();
+    }
+  };
+
+  const handleEscapeKey = (event) => {
+    if (event.key === 'Escape' && mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  };
+
+  // Outside click handling and focus management
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileNavRef.current && !mobileNavRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+      
+      // Focus management - focus first focusable element in mobile nav
+      const firstFocusableElement = mobileNavRef.current?.querySelector('a, button');
+      if (firstFocusableElement) {
+        firstFocusableElement.focus();
+      }
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [mobileMenuOpen]);
+
   const handleMobileNavClick = () => {
     setMobileMenuOpen(false);
   };
 
-  const isAdmin = state.user?.email?.endsWith('@admin.com');
+  const isAdmin = useMemo(() => 
+    state.user?.email?.endsWith('@admin.com'), 
+    [state.user?.email]
+  );
   
   return (
     <header className={classes.header}>
@@ -60,11 +102,19 @@ export const Header = memo(() => {
       </nav>
 
       {/* Mobile Hamburger Menu */}
-      <div className={classes.hamburger} onClick={handleMobileMenuToggle}>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <button 
+        className={`${classes.hamburger} ${mobileMenuOpen ? classes.open : ''}`}
+        onClick={handleMobileMenuToggle}
+        onKeyDown={handleKeyDown}
+        aria-expanded={mobileMenuOpen}
+        aria-controls="mobile-nav"
+        aria-label="メニューを開く"
+        type="button"
+      >
+        <span className={classes.lineTop}></span>
+        <span className={classes.lineMiddle}></span>
+        <span className={classes.lineBottom}></span>
+      </button>
 
       {/* Desktop Auth Section */}
       <div className={classes.authSection}>
@@ -83,7 +133,13 @@ export const Header = memo(() => {
       </div>
 
       {/* Mobile Navigation Menu */}
-      <nav className={`${classes.mobileNav} ${mobileMenuOpen ? classes.open : ''}`}>
+      <nav 
+        ref={mobileNavRef}
+        id="mobile-nav"
+        className={`${classes.mobileNav} ${mobileMenuOpen ? classes.open : ''}`}
+        role="navigation"
+        aria-label="モバイルナビゲーション"
+      >
         {NAV_ITEMS.map((item) => {
           if (item.requireAuth && !state.user?.isLoggedIn) {
             return null;
