@@ -52,7 +52,7 @@ jobs:
 
             具体的な改善提案を含む建設的なフィードバックを提供してください。
             インラインコメントを使用して、懸念事項を具体的に強調してください。
-            改善PRも作ってください。
+            改善をこのPRに実装してください。
             
           # Direct prompt for automated review (no @claude mention needed)
           # direct_prompt: |
