@@ -6,6 +6,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
+  position: relative;
 }
 
 .anchor {
@@ -85,4 +86,131 @@
 :global([data-theme="dark"]) .logoutButton:hover {
   border-color: #9f7aea;
   color: #9f7aea;
+}
+
+/* Mobile Responsive Design */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 8px;
+  gap: 3px;
+}
+
+.hamburger span {
+  width: 20px;
+  height: 2px;
+  background-color: #4a5568;
+  transition: all 0.3s ease;
+}
+
+.mobileNav {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-bottom: 1px solid #eaeaea;
+  flex-direction: column;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.mobileNav.open {
+  display: flex;
+}
+
+.mobileNavItem {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+  text-decoration: none;
+  color: inherit;
+  font-size: 1rem;
+}
+
+.mobileNavItem:last-child {
+  border-bottom: none;
+}
+
+.mobileAuthSection {
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 1rem;
+}
+
+/* Mobile breakpoints */
+@media (max-width: 768px) {
+  .header {
+    height: 70px;
+    padding: 0 1rem;
+  }
+  
+  .nav {
+    display: none;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+  
+  .authSection {
+    display: none;
+  }
+  
+  .anchor {
+    font-size: 1rem;
+    padding: 6px 16px;
+  }
+  
+  .userEmail {
+    font-size: 0.8rem;
+  }
+  
+  .loginButton,
+  .logoutButton {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    height: 60px;
+    padding: 0 0.75rem;
+  }
+  
+  .anchor {
+    font-size: 0.9rem;
+    padding: 4px 12px;
+  }
+  
+  .userEmail {
+    font-size: 0.75rem;
+  }
+  
+  .loginButton,
+  .logoutButton {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Dark mode mobile styles */
+:global([data-theme="dark"]) .hamburger span {
+  background-color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .mobileNav {
+  background: #2d3748;
+  border-bottom-color: #4a5568;
+}
+
+:global([data-theme="dark"]) .mobileNavItem {
+  border-bottom-color: #4a5568;
+  color: #a0aec0;
+}
+
+:global([data-theme="dark"]) .mobileAuthSection {
+  border-top-color: #4a5568;
 }
