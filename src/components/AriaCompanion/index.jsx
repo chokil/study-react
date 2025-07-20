@@ -1,5 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import classes from './AriaCompanion.module.css';
+
+// Constants to replace magic numbers
+const CANVAS_SIZE = 400;
+const CHARACTER_CENTER_X = 200;
+const CHARACTER_CENTER_Y = 200;
+const MAX_PARTICLES = 30;
+const MESSAGE_MAX_LENGTH = 500;
+const EMOTION_CYCLE_INTERVAL = 6000;
+const PARTICLE_GENERATION_INTERVAL = 300;
 
 const EMOTIONS = {
   happy: { 
@@ -113,14 +123,20 @@ export const AriaCompanion = () => {
   const animationRef = useRef(null);
   const particleId = useRef(0);
 
-  // 3D Character rendering
+  // 3D Character rendering with error handling
   const drawCharacter = useCallback((ctx, emotion, time) => {
-    const centerX = 200;
-    const centerY = 200;
-    const currentEmotion = EMOTIONS[emotion];
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, 400, 400);
+    try {
+      if (!ctx || !emotion || !EMOTIONS[emotion]) {
+        console.warn('Invalid context or emotion provided to drawCharacter');
+        return;
+      }
+
+      const centerX = CHARACTER_CENTER_X;
+      const centerY = CHARACTER_CENTER_Y;
+      const currentEmotion = EMOTIONS[emotion];
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     
     // Breathing effect
     const breathOffset = Math.sin(time * 0.002) * 5;
@@ -233,132 +249,18 @@ export const AriaCompanion = () => {
     const eyeScale = currentEmotion.eyeScale || 1.0;
     const eyeY = shouldBlink ? -25 : -30;
     const eyeHeight = shouldBlink ? 2 : 20 * eyeScale;
+    const isWinking = currentEmotion.eyes === 'wink';
     
     // Left eye
     ctx.save();
     ctx.translate(-15, eyeY);
-    
-    if (currentEmotion.eyes === 'crescent') {
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(0, 5, 12, 0, Math.PI);
-      ctx.stroke();
-    } else if (currentEmotion.eyes === 'star') {
-      ctx.fillStyle = '#FFD700';
-      drawStar(ctx, 0, 0, 5, 12, 6);
-    } else if (currentEmotion.eyes === 'heart') {
-      ctx.fillStyle = '#FF1493';
-      drawHeart(ctx, 0, 0, 10);
-    } else if (currentEmotion.eyes === 'closed') {
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(-12, 0);
-      ctx.quadraticCurveTo(0, 5, 12, 0);
-      ctx.stroke();
-    } else if (currentEmotion.eyes === 'wink') {
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(-12, 0);
-      ctx.quadraticCurveTo(0, 5, 12, 0);
-      ctx.stroke();
-    } else {
-      // Normal eye
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 12, eyeHeight/2, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Iris
-      ctx.fillStyle = '#4169E1';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 8, eyeHeight/3, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Pupil
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 3, eyeHeight/6, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Highlight
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(-2, -2, 2, eyeHeight/8, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
+    drawSingleEye(ctx, currentEmotion.eyes, eyeHeight, true, isWinking);
     ctx.restore();
     
-    // Right eye (mirror logic for wink)
+    // Right eye  
     ctx.save();
     ctx.translate(15, eyeY);
-    
-    if (currentEmotion.eyes === 'wink') {
-      // Normal eye for wink
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 12, eyeHeight/2, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = '#4169E1';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 8, eyeHeight/3, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 3, eyeHeight/6, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(-2, -2, 2, eyeHeight/8, 0, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (currentEmotion.eyes === 'crescent') {
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(0, 5, 12, 0, Math.PI);
-      ctx.stroke();
-    } else if (currentEmotion.eyes === 'star') {
-      ctx.fillStyle = '#FFD700';
-      drawStar(ctx, 0, 0, 5, 12, 6);
-    } else if (currentEmotion.eyes === 'heart') {
-      ctx.fillStyle = '#FF1493';
-      drawHeart(ctx, 0, 0, 10);
-    } else if (currentEmotion.eyes === 'closed') {
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(-12, 0);
-      ctx.quadraticCurveTo(0, 5, 12, 0);
-      ctx.stroke();
-    } else {
-      // Normal eye
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 12, eyeHeight/2, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = '#4169E1';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 8, eyeHeight/3, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 3, eyeHeight/6, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(-2, -2, 2, eyeHeight/8, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
+    drawSingleEye(ctx, currentEmotion.eyes, eyeHeight, false, isWinking);
     ctx.restore();
     
     // Eyebrows
@@ -420,10 +322,13 @@ export const AriaCompanion = () => {
     ctx.fill();
     
     ctx.restore();
+    } catch (error) {
+      console.error('Error in drawCharacter:', error);
+    }
   }, []);
 
-  // Helper functions for special eye shapes
-  const drawStar = (ctx, x, y, spikes, outerRadius, innerRadius) => {
+  // Helper functions for special eye shapes (memoized for performance)
+  const drawStar = useCallback((ctx, x, y, spikes, outerRadius, innerRadius) => {
     let rotation = Math.PI / 2 * 3;
     let step = Math.PI / spikes;
     
@@ -440,9 +345,9 @@ export const AriaCompanion = () => {
     ctx.lineTo(x, y - outerRadius);
     ctx.closePath();
     ctx.fill();
-  };
+  }, []);
 
-  const drawHeart = (ctx, x, y, size) => {
+  const drawHeart = useCallback((ctx, x, y, size) => {
     ctx.beginPath();
     ctx.moveTo(x, y + size/4);
     ctx.bezierCurveTo(x, y, x - size/2, y - size/2, x - size/2, y + size/8);
@@ -451,7 +356,89 @@ export const AriaCompanion = () => {
     ctx.bezierCurveTo(x + size/2, y - size/2, x, y, x, y + size/4);
     ctx.closePath();
     ctx.fill();
-  };
+  }, []);
+
+  // Helper function to draw individual eye (eliminates code duplication)
+  const drawSingleEye = useCallback((ctx, eyeType, eyeHeight, isLeftEye = true, isWinking = false) => {
+    // For winking, left eye is closed, right eye is normal
+    const shouldDrawSpecialEye = isWinking ? isLeftEye : true;
+    
+    if (!shouldDrawSpecialEye || eyeType === 'wink') {
+      // Draw normal eye for non-winking eye or when winking
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 12, eyeHeight/2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Iris
+      ctx.fillStyle = '#4169E1';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 8, eyeHeight/3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Pupil
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 3, eyeHeight/6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Highlight
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.ellipse(-2, -2, 2, eyeHeight/8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      return;
+    }
+
+    // Draw special eye types
+    switch (eyeType) {
+      case 'crescent':
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 5, 12, 0, Math.PI);
+        ctx.stroke();
+        break;
+      case 'star':
+        ctx.fillStyle = '#FFD700';
+        drawStar(ctx, 0, 0, 5, 12, 6);
+        break;
+      case 'heart':
+        ctx.fillStyle = '#FF1493';
+        drawHeart(ctx, 0, 0, 10);
+        break;
+      case 'closed':
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(-12, 0);
+        ctx.quadraticCurveTo(0, 5, 12, 0);
+        ctx.stroke();
+        break;
+      default:
+        // Normal eye (fallback)
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 12, eyeHeight/2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#4169E1';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 8, eyeHeight/3, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 3, eyeHeight/6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.ellipse(-2, -2, 2, eyeHeight/8, 0, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+    }
+  }, [drawStar, drawHeart]);
 
   // Particle system for 3D magic effects
   const createParticle = useCallback(() => {
@@ -459,8 +446,8 @@ export const AriaCompanion = () => {
     
     const particle = {
       id: particleId.current++,
-      x: Math.random() * 400,
-      y: Math.random() * 400,
+      x: Math.random() * CANVAS_SIZE,
+      y: Math.random() * CANVAS_SIZE,
       z: Math.random() * 100, // 3D depth
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2,
@@ -472,7 +459,7 @@ export const AriaCompanion = () => {
       type: Math.random() > 0.5 ? 'heart' : 'star'
     };
     
-    setParticles(prev => [...prev.slice(-30), particle]);
+    setParticles(prev => [...prev.slice(-MAX_PARTICLES), particle]);
   }, [emotion]);
 
   // 3D Particle rendering
@@ -501,42 +488,51 @@ export const AriaCompanion = () => {
     });
   }, []);
 
-  // Animation loop
+  // Animation loop with error handling
   useEffect(() => {
     if (!isActive) return;
 
     const animate = (currentTime) => {
-      setTime(currentTime);
-      
-      const canvas = canvasRef.current;
-      const characterCanvas = characterCanvasRef.current;
-      
-      if (!canvas || !characterCanvas) return;
-
-      const ctx = canvas.getContext('2d');
-      const charCtx = characterCanvas.getContext('2d');
-      
-      // Clear canvases
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw character
-      drawCharacter(charCtx, emotion, currentTime);
-      
-      // Update and draw particles
-      setParticles(prev => {
-        const updated = prev.map(particle => ({
-          ...particle,
-          x: particle.x + particle.vx,
-          y: particle.y + particle.vy,
-          z: particle.z + particle.vz,
-          life: particle.life - particle.decay
-        })).filter(particle => particle.life > 0 && particle.z > -50);
+      try {
+        setTime(currentTime);
         
-        drawParticles(ctx, updated, currentTime);
-        return updated;
-      });
+        const canvas = canvasRef.current;
+        const characterCanvas = characterCanvasRef.current;
+        
+        if (!canvas || !characterCanvas) return;
 
-      animationRef.current = requestAnimationFrame(animate);
+        const ctx = canvas.getContext('2d');
+        const charCtx = characterCanvas.getContext('2d');
+        
+        if (!ctx || !charCtx) {
+          console.warn('Could not get canvas context');
+          return;
+        }
+        
+        // Clear canvases
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw character
+        drawCharacter(charCtx, emotion, currentTime);
+        
+        // Update and draw particles
+        setParticles(prev => {
+          const updated = prev.map(particle => ({
+            ...particle,
+            x: particle.x + particle.vx,
+            y: particle.y + particle.vy,
+            z: particle.z + particle.vz,
+            life: particle.life - particle.decay
+          })).filter(particle => particle.life > 0 && particle.z > -50);
+          
+          drawParticles(ctx, updated, currentTime);
+          return updated;
+        });
+
+        animationRef.current = requestAnimationFrame(animate);
+      } catch (error) {
+        console.error('Error in animation loop:', error);
+      }
     };
 
     animationRef.current = requestAnimationFrame(animate);
@@ -551,7 +547,7 @@ export const AriaCompanion = () => {
   useEffect(() => {
     if (!isActive || !EMOTIONS[emotion].sparkles) return;
 
-    const interval = setInterval(createParticle, 300);
+    const interval = setInterval(createParticle, PARTICLE_GENERATION_INTERVAL);
     return () => clearInterval(interval);
   }, [isActive, emotion, createParticle]);
 
@@ -563,7 +559,7 @@ export const AriaCompanion = () => {
     const interval = setInterval(() => {
       const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
       setEmotion(randomEmotion);
-    }, 6000);
+    }, EMOTION_CYCLE_INTERVAL);
 
     return () => clearInterval(interval);
   }, [isActive]);
@@ -578,12 +574,27 @@ export const AriaCompanion = () => {
     }]);
   };
 
-  const handleSendMessage = async (text = inputValue) => {
+  // Memoize emotion analysis patterns for performance
+  const emotionPatterns = useMemo(() => ({
+    excited: ['嬉しい', '楽しい', 'ワクワク'],
+    thinking: ['考え', '？', 'なぜ'],
+    loving: ['愛', '好き', '💕'],
+    surprised: ['びっくり', '驚き', 'すごい'],
+    shy: ['恥ずかしい', '照れ'],
+    playful: ['遊び', '楽しみ'],
+    calm: ['落ち着', '平和'],
+    curious: ['知りたい', '興味']
+  }), []);
+
+  const handleSendMessage = useCallback(async (text = inputValue) => {
     if (!text.trim()) return;
+
+    // Input sanitization for security
+    const sanitizedText = text.trim().slice(0, MESSAGE_MAX_LENGTH);
 
     const userMessage = {
       id: Date.now(),
-      text: text.trim(),
+      text: sanitizedText,
       sender: 'user',
       timestamp: Date.now()
     };
@@ -592,24 +603,14 @@ export const AriaCompanion = () => {
     setInputValue('');
     setIsTyping(true);
 
-    // Emotion analysis (enhanced for Japanese)
-    const lowerText = text.toLowerCase();
-    if (lowerText.includes('嬉しい') || lowerText.includes('楽しい') || lowerText.includes('ワクワク')) {
-      setEmotion('excited');
-    } else if (lowerText.includes('考え') || lowerText.includes('？') || lowerText.includes('なぜ')) {
-      setEmotion('thinking');
-    } else if (lowerText.includes('愛') || lowerText.includes('好き') || lowerText.includes('💕')) {
-      setEmotion('loving');
-    } else if (lowerText.includes('びっくり') || lowerText.includes('驚き') || lowerText.includes('すごい')) {
-      setEmotion('surprised');
-    } else if (lowerText.includes('恥ずかしい') || lowerText.includes('照れ')) {
-      setEmotion('shy');
-    } else if (lowerText.includes('遊び') || lowerText.includes('楽しみ')) {
-      setEmotion('playful');
-    } else if (lowerText.includes('落ち着') || lowerText.includes('平和')) {
-      setEmotion('calm');
-    } else if (lowerText.includes('知りたい') || lowerText.includes('興味')) {
-      setEmotion('curious');
+    // Emotion analysis (enhanced for Japanese) - using memoized patterns
+    const lowerText = sanitizedText.toLowerCase();
+    const detectedEmotion = Object.entries(emotionPatterns).find(([emotion, patterns]) =>
+      patterns.some(pattern => lowerText.includes(pattern))
+    );
+    
+    if (detectedEmotion) {
+      setEmotion(detectedEmotion[0]);
     }
 
     // Simulate AI response delay
@@ -624,9 +625,44 @@ export const AriaCompanion = () => {
       setIsTyping(false);
       setTimeout(() => setEmotion('happy'), 2000);
     }, 1000 + Math.random() * 2000);
-  };
+  }, [inputValue, emotionPatterns]);
 
-  const currentEmotion = EMOTIONS[emotion];
+  // Memoize expensive calculations for performance
+  const currentEmotion = useMemo(() => EMOTIONS[emotion], [emotion]);
+  
+  // Memoize emotion control buttons
+  const emotionControlButtons = useMemo(() => 
+    Object.keys(EMOTIONS).map(emotionType => (
+      <button
+        key={emotionType}
+        onClick={() => setEmotion(emotionType)}
+        className={`${classes.emotionButton} ${emotion === emotionType ? classes.active : ''}`}
+        style={{ backgroundColor: EMOTIONS[emotionType].color }}
+        title={emotionType}
+        tabIndex={0}
+        role="button"
+        aria-label={`感情を${emotionType}に変更`}
+      >
+        {emotionType.slice(0, 3)}
+      </button>
+    )), [emotion]
+  );
+
+  // Memoize suggested message buttons
+  const suggestedMessageButtons = useMemo(() =>
+    SUGGESTED_MESSAGES.map((suggestion, index) => (
+      <button
+        key={index}
+        onClick={() => handleSendMessage(suggestion)}
+        className={classes.suggestionButton}
+        tabIndex={0}
+        role="button"
+        aria-label={`提案メッセージ: ${suggestion}`}
+      >
+        {suggestion}
+      </button>
+    )), [handleSendMessage]
+  );
 
   return (
     <div className={classes.container}>
@@ -634,17 +670,21 @@ export const AriaCompanion = () => {
         <canvas
           ref={canvasRef}
           className={classes.particleCanvas}
-          width={400}
-          height={400}
+          width={CANVAS_SIZE}
+          height={CANVAS_SIZE}
+          aria-label="3Dパーティクルエフェクト"
+          role="img"
         />
         <canvas
           ref={characterCanvasRef}
           className={`${classes.characterCanvas} ${classes[emotion]}`}
-          width={400}
-          height={400}
+          width={CANVAS_SIZE}
+          height={CANVAS_SIZE}
           style={{ 
             filter: `drop-shadow(0 0 20px ${currentEmotion.color}50)`
           }}
+          aria-label={`3Dアニメキャラクター Aria - 現在の感情: ${emotion}`}
+          role="img"
         />
         
         {!isActive ? (
@@ -657,6 +697,7 @@ export const AriaCompanion = () => {
             <button
               onClick={handleActivate}
               className={classes.activateButton}
+              aria-label="Ariaコンパニオンを起動"
             >
               ✨ Ariaを起動する ✨
             </button>
@@ -664,18 +705,8 @@ export const AriaCompanion = () => {
         ) : (
           <div className={classes.emotionIndicator}>
             感情: <span style={{ color: currentEmotion.color }}>{emotion}</span>
-            <div className={classes.emotionControls}>
-              {Object.keys(EMOTIONS).map(emotionType => (
-                <button
-                  key={emotionType}
-                  onClick={() => setEmotion(emotionType)}
-                  className={`${classes.emotionButton} ${emotion === emotionType ? classes.active : ''}`}
-                  style={{ backgroundColor: EMOTIONS[emotionType].color }}
-                  title={emotionType}
-                >
-                  {emotionType.slice(0, 3)}
-                </button>
-              ))}
+            <div className={classes.emotionControls} role="group" aria-label="感情コントロール">
+              {emotionControlButtons}
             </div>
           </div>
         )}
@@ -709,16 +740,8 @@ export const AriaCompanion = () => {
           </div>
 
           <div className={classes.inputContainer}>
-            <div className={classes.suggestedMessages}>
-              {SUGGESTED_MESSAGES.map((suggestion, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSendMessage(suggestion)}
-                  className={classes.suggestionButton}
-                >
-                  {suggestion}
-                </button>
-              ))}
+            <div className={classes.suggestedMessages} role="group" aria-label="提案メッセージ">
+              {suggestedMessageButtons}
             </div>
             
             <div className={classes.inputGroup}>
@@ -743,4 +766,20 @@ export const AriaCompanion = () => {
       )}
     </div>
   );
+};
+
+// PropTypes for type safety
+AriaCompanion.propTypes = {
+  // Component currently doesn't accept props, but adding for future extensibility
+  initialEmotion: PropTypes.oneOf(Object.keys(EMOTIONS)),
+  autoEmotionCycle: PropTypes.bool,
+  maxMessageLength: PropTypes.number,
+  canvasSize: PropTypes.number
+};
+
+AriaCompanion.defaultProps = {
+  initialEmotion: 'happy',
+  autoEmotionCycle: true,
+  maxMessageLength: MESSAGE_MAX_LENGTH,
+  canvasSize: CANVAS_SIZE
 };
