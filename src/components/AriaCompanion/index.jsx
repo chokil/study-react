@@ -1,125 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import classes from './AriaCompanion.module.css';
-
-// 本格的日本アニメ美少女感情システム
-const EMOTIONS = {
-  happy: { 
-    eyes: 'crescent', 
-    mouth: 'smile', 
-    blush: 0.8, 
-    color: '#FFB6C1', 
-    sparkles: true,
-    eyeScale: 1.0,
-    eyeType: 'crescent_happy',
-    pupils: 'normal'
-  },
-  excited: { 
-    eyes: 'star', 
-    mouth: 'open_excited', 
-    blush: 0.9, 
-    color: '#FF69B4', 
-    sparkles: true, 
-    bounce: true,
-    eyeScale: 1.3,
-    eyeType: 'star_excited',
-    pupils: 'star'
-  },
-  thinking: { 
-    eyes: 'half', 
-    mouth: 'neutral', 
-    blush: 0.4, 
-    color: '#87CEEB', 
-    rotation: true,
-    eyeScale: 0.8,
-    eyeType: 'half_thinking',
-    pupils: 'small'
-  },
-  surprised: { 
-    eyes: 'wide', 
-    mouth: 'open_round', 
-    blush: 0.6, 
-    color: '#FFD700', 
-    scale: true,
-    eyeScale: 1.5,
-    eyeType: 'wide_surprised',
-    pupils: 'large'
-  },
-  calm: { 
-    eyes: 'gentle', 
-    mouth: 'soft_smile', 
-    blush: 0.5, 
-    color: '#98FB98', 
-    float: true,
-    eyeScale: 1.0,
-    eyeType: 'gentle_calm',
-    pupils: 'normal'
-  },
-  playful: { 
-    eyes: 'wink', 
-    mouth: 'playful_grin', 
-    blush: 0.7, 
-    color: '#FF6347', 
-    wiggle: true,
-    eyeScale: 1.1,
-    eyeType: 'wink_playful',
-    pupils: 'normal'
-  },
-  shy: { 
-    eyes: 'closed', 
-    mouth: 'small_smile', 
-    blush: 1.0, 
-    color: '#F0E68C', 
-    shrink: true,
-    eyeScale: 0.8,
-    eyeType: 'closed_shy',
-    pupils: 'hidden'
-  },
-  curious: { 
-    eyes: 'sparkle', 
-    mouth: 'curious_open', 
-    blush: 0.6, 
-    color: '#DDA0DD', 
-    tilt: true,
-    eyeScale: 1.2,
-    eyeType: 'sparkle_curious',
-    pupils: 'sparkle'
-  },
-  loving: { 
-    eyes: 'heart', 
-    mouth: 'loving_smile', 
-    blush: 0.9, 
-    color: '#FF1493', 
-    pulse: true, 
-    sparkles: true,
-    eyeScale: 1.1,
-    eyeType: 'heart_loving',
-    pupils: 'heart'
-  }
-};
-
-const SAMPLE_RESPONSES = [
-  "こんにちは！今日はどんな一日でしたか？✨",
-  "お疲れ様です！何かお手伝いできることはありますか？",
-  "素敵ですね！もっと教えてください💕",
-  "わあ、とても興味深いお話ですね！",
-  "一緒にお話しできて嬉しいです！",
-  "あなたのことをもっと知りたいです！",
-  "今日も頑張っていますね！応援しています✨",
-  "楽しいお話をありがとうございます！",
-  "それは面白いアイデアですね！",
-  "お話を聞いていて楽しいです💖"
-];
-
-const SUGGESTED_MESSAGES = [
-  "あなたの大きな瞳、素敵ですね！👀✨",
-  "アニメの中のキャラクターみたい！",
-  "あなたのツインテールを揺らして！",
-  "一緒にアニメを話しませんか？",
-  "美しいアニメーションですね！",
-  "きょうは元気ですか？😊",
-  "私の3Dアニメーションどうですか？",
-  "感情コントロールを試してみて！"
-];
+import { 
+  EMOTIONS, 
+  SAMPLE_RESPONSES, 
+  SUGGESTED_MESSAGES,
+  CANVAS_CONFIG,
+  ANIMATION_CONFIG,
+  PARTICLE_CONFIG,
+  CHARACTER_CONFIG,
+  PERFORMANCE_CONFIG
+} from './constants';
 
 export const AriaCompanion = () => {
   const [isActive, setIsActive] = useState(false);
@@ -134,21 +24,26 @@ export const AriaCompanion = () => {
   const animationRef = useRef(null);
   const particleId = useRef(0);
 
-  // 本格的日本アニメ美少女3Dレンダリング
+  // Character rendering with improved error handling
   const drawCharacter = useCallback((ctx, emotion, time) => {
-    const centerX = 200;
-    const centerY = 200;
+    if (!ctx) {
+      console.warn('Canvas context is null, skipping frame');
+      return;
+    }
+    
+    const centerX = CANVAS_CONFIG.CENTER_X;
+    const centerY = CANVAS_CONFIG.CENTER_Y;
     const currentEmotion = EMOTIONS[emotion];
     
     // Clear canvas
-    ctx.clearRect(0, 0, 400, 400);
+    ctx.clearRect(0, 0, CANVAS_CONFIG.WIDTH, CANVAS_CONFIG.HEIGHT);
     
-    // 生命感アニメーション
-    const breathOffset = Math.sin(time * 0.002) * 6; // 呼吸
-    const heartbeat = Math.sin(time * 0.005) * 2; // 鼓動
-    const blinkCycle = Math.sin(time * 0.0008) * 0.5 + 0.5;
-    const shouldBlink = Math.sin(time * 0.0004) > 0.94; // まばたき
-    const twinTailSway = Math.sin(time * 0.003) * 0.15; // ツインテールの揺れ
+    // Life-like animations with configurable timing
+    const breathOffset = Math.sin(time * ANIMATION_CONFIG.BREATH_SPEED) * 6;
+    const heartbeat = Math.sin(time * ANIMATION_CONFIG.HEARTBEAT_SPEED) * 2;
+    const blinkCycle = Math.sin(time * ANIMATION_CONFIG.BLINK_SPEED) * 0.5 + 0.5;
+    const shouldBlink = Math.sin(time * ANIMATION_CONFIG.BLINK_SPEED * 0.5) > 0.94;
+    const twinTailSway = Math.sin(time * ANIMATION_CONFIG.TWIN_TAIL_SPEED) * 0.15;
     
     ctx.save();
     ctx.translate(centerX, centerY + breathOffset);
@@ -380,13 +275,13 @@ export const AriaCompanion = () => {
     ctx.ellipse(-15, -50, 8, 20, -0.3, 0, Math.PI * 2);
     ctx.fill();
     
-    // 本格的日本アニメ眼システム (革命的改善)
+    // Professional anime eye system with improved configuration
     const eyeScale = currentEmotion.eyeScale || 1.0;
-    const baseEyeWidth = 30; // 大幅に大きく (12px -> 30px)
-    const baseEyeHeight = 25; // 高さも大きく
+    const baseEyeWidth = CHARACTER_CONFIG.EYES.BASE_WIDTH;
+    const baseEyeHeight = CHARACTER_CONFIG.EYES.BASE_HEIGHT;
     const eyeY = shouldBlink ? -35 : -40;
-    const eyeWidth = shouldBlink ? baseEyeWidth * 0.1 : baseEyeWidth * eyeScale;
-    const eyeHeight = shouldBlink ? 3 : baseEyeHeight * eyeScale;
+    const eyeWidth = shouldBlink ? baseEyeWidth * CHARACTER_CONFIG.EYES.BLINK_WIDTH_SCALE : baseEyeWidth * eyeScale;
+    const eyeHeight = shouldBlink ? CHARACTER_CONFIG.EYES.BLINK_HEIGHT : baseEyeHeight * eyeScale;
     
     // 左眼 (本格的アニメ武学)
     ctx.save();
@@ -797,15 +692,15 @@ export const AriaCompanion = () => {
     ctx.fill();
   };
 
-  // 高品質3D魔法パーティクルシステム
+  // Optimized particle system with memory management
   const createParticle = useCallback(() => {
     if (!EMOTIONS[emotion].sparkles) return;
     
     const particleTypes = ['heart', 'star', 'sparkle', 'bubble', 'diamond'];
-    const centerX = 200;
-    const centerY = 200;
+    const centerX = CANVAS_CONFIG.CENTER_X;
+    const centerY = CANVAS_CONFIG.CENTER_Y;
     
-    // キャラクター周辺に集中させる
+    // Create particles around character with better distribution
     const angle = Math.random() * Math.PI * 2;
     const distance = 80 + Math.random() * 100;
     const x = centerX + Math.cos(angle) * distance;
@@ -815,24 +710,29 @@ export const AriaCompanion = () => {
       id: particleId.current++,
       x: x,
       y: y,
-      z: Math.random() * 150 - 50, // 深い3D空間
+      z: Math.random() * 150 - 50, // 3D depth
       vx: (Math.random() - 0.5) * 3,
-      vy: (Math.random() - 0.5) * 3 - 1, // 上方向の偽力
+      vy: (Math.random() - 0.5) * 3 - 1, // Slight upward bias
       vz: (Math.random() - 0.5) * 2,
       life: 1,
-      decay: 0.003 + Math.random() * 0.008,
-      size: 3 + Math.random() * 6,
+      decay: PARTICLE_CONFIG.DECAY_RATE.MIN + Math.random() * (PARTICLE_CONFIG.DECAY_RATE.MAX - PARTICLE_CONFIG.DECAY_RATE.MIN),
+      size: PARTICLE_CONFIG.SIZE.MIN + Math.random() * (PARTICLE_CONFIG.SIZE.MAX - PARTICLE_CONFIG.SIZE.MIN),
       color: EMOTIONS[emotion].color,
       type: particleTypes[Math.floor(Math.random() * particleTypes.length)],
       rotation: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.1,
       sparklePhase: Math.random() * Math.PI * 2,
-      gravity: 0.02,
-      bounce: 0.8
+      gravity: PARTICLE_CONFIG.PHYSICS.GRAVITY,
+      bounce: PARTICLE_CONFIG.PHYSICS.BOUNCE
     };
     
-    setParticles(prev => [...prev.slice(-40), particle]); // パーティクル数増加
-  }, [emotion]);
+    setParticles(prev => {
+      const maxParticles = qualityLevel === 'LOW' 
+        ? Math.floor(PARTICLE_CONFIG.MAX_PARTICLES * 0.5)
+        : PARTICLE_CONFIG.MAX_PARTICLES;
+      return [...prev.slice(-(maxParticles - 1)), particle];
+    });
+  }, [emotion, qualityLevel]);
 
   // 高品質3Dパーティクルレンダリング
   const drawParticles = useCallback((ctx, particleList, time) => {
@@ -927,87 +827,165 @@ export const AriaCompanion = () => {
     });
   }, []);
 
-  // Animation loop
+  // Performance monitoring
+  const [fps, setFps] = useState(60);
+  const [qualityLevel, setQualityLevel] = useState('HIGH');
+  const lastFrameTime = useRef(0);
+  const frameCount = useRef(0);
+  const fpsUpdateInterval = useRef(null);
+
+  // Adaptive quality adjustment
+  useEffect(() => {
+    if (fps < PERFORMANCE_CONFIG.LOW_QUALITY_THRESHOLD) {
+      if (qualityLevel !== 'LOW') {
+        setQualityLevel('LOW');
+        console.log('Performance: Switched to LOW quality mode');
+      }
+    } else if (fps > PERFORMANCE_CONFIG.LOW_QUALITY_THRESHOLD + 10) {
+      if (qualityLevel !== 'HIGH') {
+        setQualityLevel('HIGH');
+        console.log('Performance: Switched to HIGH quality mode');
+      }
+    }
+  }, [fps, qualityLevel]);
+
+  // Enhanced animation loop with frame rate limiting
   useEffect(() => {
     if (!isActive) return;
 
+    let animationId = null;
+    let lastTime = 0;
+    
+    // FPS monitoring
+    const startFpsMonitoring = () => {
+      frameCount.current = 0;
+      fpsUpdateInterval.current = setInterval(() => {
+        setFps(frameCount.current);
+        frameCount.current = 0;
+      }, 1000);
+    };
+
     const animate = (currentTime) => {
+      // Frame rate limiting
+      if (currentTime - lastTime < ANIMATION_CONFIG.FRAME_TIME) {
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+      
+      frameCount.current++;
+      lastTime = currentTime;
       setTime(currentTime);
       
       const canvas = canvasRef.current;
       const characterCanvas = characterCanvasRef.current;
       
-      if (!canvas || !characterCanvas) return;
+      if (!canvas || !characterCanvas) {
+        console.warn('Canvas elements not found, retrying...');
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
 
       const ctx = canvas.getContext('2d');
       const charCtx = characterCanvas.getContext('2d');
       
-      // Clear canvases
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!ctx || !charCtx) {
+        console.warn('Canvas contexts not available, retrying...');
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
       
-      // Draw character
-      drawCharacter(charCtx, emotion, currentTime);
-      
-      // 高品質パーティクル更新と描画
-      setParticles(prev => {
-        const updated = prev.map(particle => {
-          // 重力と物理演算
-          const newVy = particle.vy + particle.gravity;
-          let newX = particle.x + particle.vx;
-          let newY = particle.y + newVy;
-          let newZ = particle.z + particle.vz;
-          let newVx = particle.vx;
-          let newVyUpdated = newVy;
-          
-          // 境界でのバウンス
-          if (newY > 390) {
-            newY = 390;
-            newVyUpdated = -newVyUpdated * particle.bounce;
-          }
-          if (newX < 10 || newX > 390) {
-            newVx = -newVx * particle.bounce;
-            newX = Math.max(10, Math.min(390, newX));
-          }
-          
-          return {
-            ...particle,
-            x: newX,
-            y: newY,
-            z: newZ,
-            vx: newVx * 0.995, // 空気抗力
-            vy: newVyUpdated * 0.995,
-            vz: particle.vz * 0.998,
-            life: particle.life - particle.decay,
-            rotation: particle.rotation + particle.rotationSpeed
-          };
-        }).filter(particle => particle.life > 0 && particle.z > -100 && particle.y < 500);
+      try {
+        // Clear canvases
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        drawParticles(ctx, updated, currentTime);
-        return updated;
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
+        // Draw character
+        drawCharacter(charCtx, emotion, currentTime);
+      
+        // Particle system with adaptive quality
+        setParticles(prev => {
+          const maxParticles = qualityLevel === 'LOW' 
+            ? Math.floor(PARTICLE_CONFIG.MAX_PARTICLES * PARTICLE_CONFIG.PARTICLE_REDUCTION_FACTOR)
+            : PARTICLE_CONFIG.MAX_PARTICLES;
+          
+          const updated = prev.slice(0, maxParticles).map(particle => {
+            // Physics simulation with bounds checking
+            const newVy = particle.vy + PARTICLE_CONFIG.PHYSICS.GRAVITY;
+            let newX = particle.x + particle.vx;
+            let newY = particle.y + newVy;
+            let newZ = particle.z + particle.vz;
+            let newVx = particle.vx;
+            let newVyUpdated = newVy;
+            
+            // Boundary collision with bounce
+            if (newY > CANVAS_CONFIG.HEIGHT - 10) {
+              newY = CANVAS_CONFIG.HEIGHT - 10;
+              newVyUpdated = -newVyUpdated * PARTICLE_CONFIG.PHYSICS.BOUNCE;
+            }
+            if (newX < 10 || newX > CANVAS_CONFIG.WIDTH - 10) {
+              newVx = -newVx * PARTICLE_CONFIG.PHYSICS.BOUNCE;
+              newX = Math.max(10, Math.min(CANVAS_CONFIG.WIDTH - 10, newX));
+            }
+            
+            return {
+              ...particle,
+              x: newX,
+              y: newY,
+              z: newZ,
+              vx: newVx * PARTICLE_CONFIG.PHYSICS.AIR_RESISTANCE,
+              vy: newVyUpdated * PARTICLE_CONFIG.PHYSICS.AIR_RESISTANCE,
+              vz: particle.vz * 0.998,
+              life: particle.life - particle.decay,
+              rotation: particle.rotation + particle.rotationSpeed
+            };
+          }).filter(particle => 
+            particle.life > 0 && 
+            particle.z > -100 && 
+            particle.y < CANVAS_CONFIG.HEIGHT + 100
+          );
+          
+          if (qualityLevel === 'HIGH') {
+            drawParticles(ctx, updated, currentTime);
+          } else if (qualityLevel === 'MEDIUM' && frameCount.current % 2 === 0) {
+            drawParticles(ctx, updated, currentTime);
+          } else if (qualityLevel === 'LOW' && frameCount.current % 3 === 0) {
+            drawParticles(ctx, updated, currentTime);
+          }
+          
+          return updated;
+        });
+        
+      } catch (error) {
+        console.error('Animation frame error:', error);
+      }
+      
+      animationId = requestAnimationFrame(animate);
     };
 
-    animationRef.current = requestAnimationFrame(animate);
+    startFpsMonitoring();
+    animationId = requestAnimationFrame(animate);
+    
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+      if (fpsUpdateInterval.current) {
+        clearInterval(fpsUpdateInterval.current);
       }
     };
-  }, [isActive, emotion, drawCharacter, drawParticles]);
+  }, [isActive, emotion, drawCharacter, drawParticles, qualityLevel]);
 
-  // 高頻度パーティクル生成
+  // Adaptive particle generation
   useEffect(() => {
     if (!isActive || !EMOTIONS[emotion].sparkles) return;
 
-    const baseInterval = 200; // 基本間隔
+    const baseInterval = PARTICLE_CONFIG.CREATION_BASE_INTERVAL;
     const emotionMultiplier = emotion === 'excited' ? 0.5 : emotion === 'loving' ? 0.7 : 1;
-    const finalInterval = baseInterval * emotionMultiplier;
+    const qualityMultiplier = qualityLevel === 'LOW' ? 2 : qualityLevel === 'MEDIUM' ? 1.5 : 1;
+    const finalInterval = baseInterval * emotionMultiplier * qualityMultiplier;
     
     const interval = setInterval(createParticle, finalInterval);
     return () => clearInterval(interval);
-  }, [isActive, emotion, createParticle]);
+  }, [isActive, emotion, createParticle, qualityLevel]);
 
   // Auto emotion cycling
   useEffect(() => {
@@ -1117,31 +1095,41 @@ export const AriaCompanion = () => {
             </button>
           </div>
         ) : (
-          <div className={classes.emotionIndicator}>
-            現在の感情: <span style={{ color: currentEmotion.color }}>{emotion}</span>
-            <div className={classes.subtitle3d} style={{ fontSize: '0.8rem', marginTop: '5px' }}>多層瞳・物理髪揺れ・本格アニメ美学</div>
-            <div className={classes.emotionControls}>
-              {Object.keys(EMOTIONS).map(emotionType => (
-                <button
-                  key={emotionType}
-                  onClick={() => setEmotion(emotionType)}
-                  className={`${classes.emotionButton} ${emotion === emotionType ? classes.active : ''}`}
-                  style={{ backgroundColor: EMOTIONS[emotionType].color }}
-                  title={`${emotionType} - ${EMOTIONS[emotionType].eyeType}`}
-                >
-                  {emotionType === 'happy' ? '😊' : 
-                   emotionType === 'excited' ? '🤩' :
-                   emotionType === 'thinking' ? '🤔' :
-                   emotionType === 'surprised' ? '😲' :
-                   emotionType === 'calm' ? '😌' :
-                   emotionType === 'playful' ? '😉' :
-                   emotionType === 'shy' ? '😳' :
-                   emotionType === 'curious' ? '🧐' :
-                   emotionType === 'loving' ? '😍' : emotionType.slice(0, 3)}
-                </button>
-              ))}
+          <>
+            <div className={classes.emotionIndicator}>
+              現在の感情: <span style={{ color: currentEmotion.color }}>{emotion}</span>
+              <div className={classes.subtitle3d} style={{ fontSize: '0.8rem', marginTop: '5px' }}>多層瞳・物理髪揺れ・本格アニメ美学</div>
+              <div className={classes.emotionControls}>
+                {Object.keys(EMOTIONS).map(emotionType => (
+                  <button
+                    key={emotionType}
+                    onClick={() => setEmotion(emotionType)}
+                    className={`${classes.emotionButton} ${emotion === emotionType ? classes.active : ''}`}
+                    style={{ backgroundColor: EMOTIONS[emotionType].color }}
+                    title={`${emotionType} - ${EMOTIONS[emotionType].eyeType}`}
+                  >
+                    {emotionType === 'happy' ? '😊' : 
+                     emotionType === 'excited' ? '🤩' :
+                     emotionType === 'thinking' ? '🤔' :
+                     emotionType === 'surprised' ? '😲' :
+                     emotionType === 'calm' ? '😌' :
+                     emotionType === 'playful' ? '😉' :
+                     emotionType === 'shy' ? '😳' :
+                     emotionType === 'curious' ? '🧐' :
+                     emotionType === 'loving' ? '😍' : emotionType.slice(0, 3)}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className={classes.performanceIndicator}>
+              <div style={{ fontSize: '0.9rem', marginBottom: '5px' }}>
+                📈 FPS: <span style={{ color: fps >= 50 ? '#4CAF50' : fps >= 30 ? '#FF9800' : '#F44336' }}>{fps}</span>
+              </div>
+              <div style={{ fontSize: '0.8rem' }}>
+                品質: <span style={{ color: qualityLevel === 'HIGH' ? '#4CAF50' : qualityLevel === 'MEDIUM' ? '#FF9800' : '#F44336' }}>{qualityLevel}</span>
+              </div>
+            </div>
+          </>
         )}
       </div>
 
