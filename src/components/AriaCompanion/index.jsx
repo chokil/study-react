@@ -102,27 +102,35 @@ const EMOTIONS = {
 };
 
 // プレースホルダー美少女画像データ（Data URL形式）
-const CHARACTER_IMAGES = {
-  // ベース顔画像（感情別）
-  faces: {
-    happy: generateAnimeCharacterImage('happy'),
-    excited: generateAnimeCharacterImage('excited'),
-    thinking: generateAnimeCharacterImage('thinking'),
-    surprised: generateAnimeCharacterImage('surprised'),
-    calm: generateAnimeCharacterImage('calm'),
-    playful: generateAnimeCharacterImage('playful'),
-    shy: generateAnimeCharacterImage('shy'),
-    curious: generateAnimeCharacterImage('curious'),
-    loving: generateAnimeCharacterImage('loving')
-  },
-  // レイヤー画像
-  hair: generateHairImage(),
-  accessories: generateAccessoriesImage(),
-  background: generateBackgroundImage()
+// SSR対応のため、画像生成は実行時に行う
+const generateCharacterImages = () => {
+  if (typeof document === 'undefined') return null; // SSR対応
+  
+  return {
+    // ベース顔画像（感情別）
+    faces: {
+      happy: generateAnimeCharacterImage('happy'),
+      excited: generateAnimeCharacterImage('excited'),
+      thinking: generateAnimeCharacterImage('thinking'),
+      surprised: generateAnimeCharacterImage('surprised'),
+      calm: generateAnimeCharacterImage('calm'),
+      playful: generateAnimeCharacterImage('playful'),
+      shy: generateAnimeCharacterImage('shy'),
+      curious: generateAnimeCharacterImage('curious'),
+      loving: generateAnimeCharacterImage('loving')
+    },
+    // レイヤー画像
+    hair: generateHairImage(),
+    accessories: generateAccessoriesImage(),
+    background: generateBackgroundImage()
+  };
 };
 
 // 日本アニメ美少女キャラクター画像生成関数
 function generateAnimeCharacterImage(emotion) {
+  // SSR対応チェック
+  if (typeof document === 'undefined') return '';
+  
   // Canvas を使用してプレースホルダー美少女キャラクター画像を生成
   const canvas = document.createElement('canvas');
   canvas.width = 400;
@@ -455,6 +463,9 @@ function drawStar(ctx, x, y, spikes, outerRadius, innerRadius) {
 
 // 髪の画像生成
 function generateHairImage() {
+  // SSR対応チェック
+  if (typeof document === 'undefined') return '';
+  
   const canvas = document.createElement('canvas');
   canvas.width = 400;
   canvas.height = 400;
@@ -527,6 +538,9 @@ function generateHairImage() {
 
 // アクセサリー画像生成
 function generateAccessoriesImage() {
+  // SSR対応チェック
+  if (typeof document === 'undefined') return '';
+  
   const canvas = document.createElement('canvas');
   canvas.width = 400;
   canvas.height = 400;
@@ -575,6 +589,9 @@ function generateAccessoriesImage() {
 
 // 背景画像生成
 function generateBackgroundImage() {
+  // SSR対応チェック
+  if (typeof document === 'undefined') return '';
+  
   const canvas = document.createElement('canvas');
   canvas.width = 400;
   canvas.height = 400;
@@ -658,31 +675,46 @@ export const AriaCompanion = () => {
   // 画像プリロード
   useEffect(() => {
     const loadImages = async () => {
+      const CHARACTER_IMAGES = generateCharacterImages();
+      if (!CHARACTER_IMAGES) return; // SSR時はスキップ
+      
       const images = {};
       
-      // 顔画像をロード
-      for (const [emotion, imageData] of Object.entries(CHARACTER_IMAGES.faces)) {
-        const img = new Image();
-        img.src = imageData;
-        await new Promise(resolve => {
-          img.onload = resolve;
-        });
-        images[`face_${emotion}`] = img;
-      }
-      
-      // その他の画像をロード
-      for (const [type, imageData] of Object.entries(CHARACTER_IMAGES)) {
-        if (type !== 'faces') {
+      try {
+        // 顔画像をロード
+        for (const [emotion, imageData] of Object.entries(CHARACTER_IMAGES.faces)) {
           const img = new Image();
           img.src = imageData;
-          await new Promise(resolve => {
+          await new Promise((resolve, reject) => {
             img.onload = resolve;
+            img.onerror = () => {
+              console.warn(`Failed to load face image for emotion: ${emotion}`);
+              resolve(); // エラーでも処理を続行
+            };
           });
-          images[type] = img;
+          images[`face_${emotion}`] = img;
         }
+        
+        // その他の画像をロード
+        for (const [type, imageData] of Object.entries(CHARACTER_IMAGES)) {
+          if (type !== 'faces') {
+            const img = new Image();
+            img.src = imageData;
+            await new Promise((resolve, reject) => {
+              img.onload = resolve;
+              img.onerror = () => {
+                console.warn(`Failed to load ${type} image`);
+                resolve(); // エラーでも処理を続行
+              };
+            });
+            images[type] = img;
+          }
+        }
+        
+        setLoadedImages(images);
+      } catch (error) {
+        console.error('Error loading images:', error);
       }
-      
-      setLoadedImages(images);
     };
     
     loadImages();
