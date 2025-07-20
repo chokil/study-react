@@ -1,4 +1,5 @@
 /* 3D Japanese Anime Beautiful Girl AI Companion - Aria */
+/* Image-Based 3D Rendering System */
 
 .container {
   min-height: 100vh;
@@ -69,125 +70,194 @@
   transform-style: preserve-3d;
 }
 
-.characterCanvas {
+/* New 3D Character Container */
+.characterContainer {
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
   transform-style: preserve-3d;
-  transition: all 0.3s ease;
+  z-index: 2;
 }
 
-/* Character 3D Animations */
-.characterCanvas.excited {
-  animation: bounce3d 0.8s ease-in-out infinite;
+.character3D {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  transform: translate3d(-50%, -50%, 0);
+  transition: filter 0.3s ease;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
-@keyframes bounce3d {
+.loadingCharacter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* Character 3D Animations for Different Emotions */
+.character3D.happy {
+  animation: happyBounce 3s ease-in-out infinite;
+}
+
+@keyframes happyBounce {
   0%, 100% { 
-    transform: translateY(0) translateZ(0) rotateX(0deg) scale(1); 
-  }
-  50% { 
-    transform: translateY(-15px) translateZ(10px) rotateX(-5deg) scale(1.05); 
-  }
-}
-
-.characterCanvas.thinking {
-  animation: thinking3d 2s linear infinite;
-}
-
-@keyframes thinking3d {
-  0% { 
-    transform: rotateY(-3deg) rotateZ(-2deg) translateZ(5px); 
-  }
-  50% { 
-    transform: rotateY(3deg) rotateZ(2deg) translateZ(-5px); 
-  }
-  100% { 
-    transform: rotateY(-3deg) rotateZ(-2deg) translateZ(5px); 
-  }
-}
-
-.characterCanvas.surprised {
-  animation: surprised3d 0.5s ease-in-out infinite alternate;
-}
-
-@keyframes surprised3d {
-  0% { 
-    transform: scale(1) rotateX(0deg) translateZ(0); 
-  }
-  100% { 
-    transform: scale(1.1) rotateX(-10deg) translateZ(20px); 
-  }
-}
-
-.characterCanvas.calm {
-  animation: float3d 4s ease-in-out infinite;
-}
-
-@keyframes float3d {
-  0%, 100% { 
-    transform: translateY(0) rotateX(0deg) translateZ(0); 
-  }
-  50% { 
-    transform: translateY(-10px) rotateX(5deg) translateZ(15px); 
-  }
-}
-
-.characterCanvas.playful {
-  animation: wiggle3d 1s ease-in-out infinite;
-}
-
-@keyframes wiggle3d {
-  0%, 100% { 
-    transform: rotateZ(0deg) rotateY(0deg) translateZ(0); 
+    transform: translate3d(-50%, -50%, 0) rotateY(0deg) scale(1); 
   }
   25% { 
-    transform: rotateZ(3deg) rotateY(5deg) translateZ(8px); 
+    transform: translate3d(-50%, -55%, 5px) rotateY(2deg) scale(1.02); 
   }
   75% { 
-    transform: rotateZ(-3deg) rotateY(-5deg) translateZ(-8px); 
+    transform: translate3d(-50%, -45%, -5px) rotateY(-2deg) scale(0.98); 
   }
 }
 
-.characterCanvas.shy {
-  animation: shrink3d 2s ease-in-out infinite;
+.character3D.excited {
+  animation: excitedSpin 2s ease-in-out infinite;
 }
 
-@keyframes shrink3d {
-  0%, 100% { 
-    transform: scale(1) rotateX(0deg) translateZ(0); 
+@keyframes excitedSpin {
+  0% { 
+    transform: translate3d(-50%, -50%, 0) rotateY(0deg) scale(1); 
+  }
+  25% { 
+    transform: translate3d(-50%, -55%, 15px) rotateY(90deg) scale(1.1); 
   }
   50% { 
-    transform: scale(0.95) rotateX(10deg) translateZ(-10px); 
+    transform: translate3d(-50%, -50%, 0) rotateY(180deg) scale(1); 
   }
-}
-
-.characterCanvas.curious {
-  animation: tilt3d 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes tilt3d {
-  0% { 
-    transform: rotateZ(-5deg) rotateY(-10deg) translateZ(5px); 
+  75% { 
+    transform: translate3d(-50%, -45%, 15px) rotateY(270deg) scale(1.1); 
   }
   100% { 
-    transform: rotateZ(5deg) rotateY(10deg) translateZ(-5px); 
+    transform: translate3d(-50%, -50%, 0) rotateY(360deg) scale(1); 
   }
 }
 
-.characterCanvas.loving {
-  animation: pulse3d 1.5s ease-in-out infinite;
+.character3D.thinking {
+  animation: thinkingRotate 4s ease-in-out infinite;
 }
 
-@keyframes pulse3d {
+@keyframes thinkingRotate {
   0%, 100% { 
-    transform: scale(1) rotateX(0deg) translateZ(0);
-    filter: drop-shadow(0 0 20px rgba(255, 20, 147, 0.5));
+    transform: translate3d(-50%, -50%, 0) rotateY(-15deg) rotateX(5deg); 
   }
   50% { 
-    transform: scale(1.05) rotateX(-5deg) translateZ(20px);
-    filter: drop-shadow(0 0 40px rgba(255, 20, 147, 0.8));
+    transform: translate3d(-50%, -50%, 10px) rotateY(15deg) rotateX(-5deg); 
+  }
+}
+
+.character3D.surprised {
+  animation: surprisedScale 1s ease-in-out infinite alternate;
+}
+
+@keyframes surprisedScale {
+  0% { 
+    transform: translate3d(-50%, -50%, 0) scale(1) rotateX(0deg); 
+  }
+  100% { 
+    transform: translate3d(-50%, -60%, 20px) scale(1.15) rotateX(-15deg); 
+  }
+}
+
+.character3D.calm {
+  animation: calmFloat 6s ease-in-out infinite;
+}
+
+@keyframes calmFloat {
+  0%, 100% { 
+    transform: translate3d(-50%, -50%, 0) rotateX(0deg) rotateZ(0deg); 
+  }
+  33% { 
+    transform: translate3d(-50%, -55%, 15px) rotateX(5deg) rotateZ(2deg); 
+  }
+  66% { 
+    transform: translate3d(-50%, -45%, -10px) rotateX(-3deg) rotateZ(-2deg); 
+  }
+}
+
+.character3D.playful {
+  animation: playfulWiggle 1.5s ease-in-out infinite;
+}
+
+@keyframes playfulWiggle {
+  0%, 100% { 
+    transform: translate3d(-50%, -50%, 0) rotateZ(0deg) rotateY(0deg); 
+  }
+  20% { 
+    transform: translate3d(-52%, -48%, 8px) rotateZ(8deg) rotateY(10deg); 
+  }
+  40% { 
+    transform: translate3d(-48%, -52%, -8px) rotateZ(-8deg) rotateY(-10deg); 
+  }
+  60% { 
+    transform: translate3d(-52%, -48%, 12px) rotateZ(5deg) rotateY(15deg); 
+  }
+  80% { 
+    transform: translate3d(-48%, -52%, -5px) rotateZ(-5deg) rotateY(-15deg); 
+  }
+}
+
+.character3D.shy {
+  animation: shyShrink 3s ease-in-out infinite;
+}
+
+@keyframes shyShrink {
+  0%, 100% { 
+    transform: translate3d(-50%, -50%, 0) scale(1) rotateX(0deg); 
+  }
+  50% { 
+    transform: translate3d(-50%, -45%, -15px) scale(0.9) rotateX(15deg); 
+  }
+}
+
+.character3D.curious {
+  animation: curiousTilt 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes curiousTilt {
+  0% { 
+    transform: translate3d(-50%, -50%, 0) rotateZ(-8deg) rotateY(-20deg) rotateX(5deg); 
+  }
+  100% { 
+    transform: translate3d(-50%, -50%, 10px) rotateZ(8deg) rotateY(20deg) rotateX(-5deg); 
+  }
+}
+
+.character3D.loving {
+  animation: lovingPulse 2s ease-in-out infinite;
+}
+
+@keyframes lovingPulse {
+  0%, 100% { 
+    transform: translate3d(-50%, -50%, 0) scale(1) rotateX(0deg);
+  }
+  50% { 
+    transform: translate3d(-50%, -55%, 25px) scale(1.08) rotateX(-10deg);
   }
 }
 
@@ -281,13 +351,19 @@
   animation: buttonGlow 3s ease-in-out infinite alternate;
 }
 
-.activateButton:hover {
+.activateButton:hover:not(:disabled) {
   transform: translateY(-5px) scale(1.08) rotateX(-10deg) translateZ(20px);
   box-shadow: 
     0 15px 40px rgba(255, 105, 180, 0.6),
     0 25px 60px rgba(255, 20, 147, 0.4),
     inset 0 2px 10px rgba(255, 255, 255, 0.3);
   background-position: 100% 0%;
+}
+
+.activateButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  animation: none;
 }
 
 @keyframes buttonGlow {
@@ -335,16 +411,19 @@
 }
 
 .emotionButton {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: none;
   border-radius: 15px;
   cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: bold;
+  font-size: 1.2rem;
   color: white;
   transition: all 0.3s ease;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   transform-style: preserve-3d;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .emotionButton:hover {
@@ -593,10 +672,14 @@
     height: 320px;
   }
   
-  .particleCanvas,
-  .characterCanvas {
+  .particleCanvas {
     width: 320px;
     height: 320px;
+  }
+  
+  .characterContainer {
+    width: 250px;
+    height: 250px;
   }
   
   .logoText {
@@ -654,10 +737,14 @@
     height: 280px;
   }
   
-  .particleCanvas,
-  .characterCanvas {
+  .particleCanvas {
     width: 280px;
     height: 280px;
+  }
+  
+  .characterContainer {
+    width: 220px;
+    height: 220px;
   }
   
   .logoText {
