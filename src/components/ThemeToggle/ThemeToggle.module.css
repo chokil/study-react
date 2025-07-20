@@ -16,6 +16,18 @@
   font-size: 0.9em;
 }
 
+/* Mobile positioning to avoid hamburger menu conflict */
+@media (max-width: 768px) {
+  .toggle {
+    top: 15px;
+    left: auto;
+    right: 70px;
+    padding: 8px 12px;
+    font-size: 0.8em;
+    z-index: 1001;
+  }
+}
+
 .toggle:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
