@@ -21,10 +21,20 @@
   .toggle {
     top: 15px;
     left: auto;
-    right: 70px;
+    right: 20px;
     padding: 8px 12px;
     font-size: 0.8em;
-    z-index: 1001;
+    z-index: 1002;
+  }
+}
+
+/* Additional mobile breakpoint for smaller devices */
+@media (max-width: 480px) {
+  .toggle {
+    top: 10px;
+    right: 15px;
+    padding: 6px 10px;
+    font-size: 0.75em;
   }
 }
 
