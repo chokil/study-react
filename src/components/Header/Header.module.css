@@ -70,20 +70,20 @@
 }
 
 /* Dark mode styles */
-:global([data-theme="dark"]) .header {
+:global(.theme-dark) .header {
   border-bottom-color: #4a5568;
 }
 
-:global([data-theme="dark"]) .userEmail {
+:global(.theme-dark) .userEmail {
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .logoutButton {
+:global(.theme-dark) .logoutButton {
   border-color: #4a5568;
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .logoutButton:hover {
+:global(.theme-dark) .logoutButton:hover {
   border-color: #9f7aea;
   color: #9f7aea;
 }
@@ -259,33 +259,33 @@
 }
 
 /* Dark mode mobile styles */
-:global([data-theme="dark"]) .hamburger span {
+:global(.theme-dark) .hamburger span {
   background-color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .hamburger:hover {
+:global(.theme-dark) .hamburger:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .hamburger:focus {
+:global(.theme-dark) .hamburger:focus {
   outline-color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .mobileNavItem:focus,
-:global([data-theme="dark"]) .mobileNavItem:hover {
+:global(.theme-dark) .mobileNavItem:focus,
+:global(.theme-dark) .mobileNavItem:hover {
   color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .mobileNav {
+:global(.theme-dark) .mobileNav {
   background: #2d3748;
   border-bottom-color: #4a5568;
 }
 
-:global([data-theme="dark"]) .mobileNavItem {
+:global(.theme-dark) .mobileNavItem {
   border-bottom-color: #4a5568;
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .mobileAuthSection {
+:global(.theme-dark) .mobileAuthSection {
   border-top-color: #4a5568;
 }

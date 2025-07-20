@@ -468,131 +468,131 @@
 }
 
 /* Dark Mode Styles */
-:global([data-theme="dark"]) .reservationContainer {
+:global(.theme-dark) .reservationContainer {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .stepTitle {
+:global(.theme-dark) .stepTitle {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .serviceCard {
+:global(.theme-dark) .serviceCard {
   background: #2d3748;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
-:global([data-theme="dark"]) .serviceCard h3 {
+:global(.theme-dark) .serviceCard h3 {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .duration {
+:global(.theme-dark) .duration {
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .selectedService {
+:global(.theme-dark) .selectedService {
   background: #1a202c;
 }
 
-:global([data-theme="dark"]) .dateSection,
-:global([data-theme="dark"]) .timeSection {
+:global(.theme-dark) .dateSection,
+:global(.theme-dark) .timeSection {
   background: #2d3748;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
-:global([data-theme="dark"]) .dateSection label,
-:global([data-theme="dark"]) .timeSection label {
+:global(.theme-dark) .dateSection label,
+:global(.theme-dark) .timeSection label {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .dateInput {
+:global(.theme-dark) .dateInput {
   background: #1a202c;
   border-color: #4a5568;
   color: white;
 }
 
-:global([data-theme="dark"]) .dateInput:focus {
+:global(.theme-dark) .dateInput:focus {
   border-color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .aiRecommendation {
+:global(.theme-dark) .aiRecommendation {
   background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
 }
 
-:global([data-theme="dark"]) .aiRecommendation p {
+:global(.theme-dark) .aiRecommendation p {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .timeSlot {
+:global(.theme-dark) .timeSlot {
   background: #1a202c;
   border-color: #4a5568;
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .timeSlot:hover:not(.unavailable) {
+:global(.theme-dark) .timeSlot:hover:not(.unavailable) {
   border-color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .timeSlot.unavailable {
+:global(.theme-dark) .timeSlot.unavailable {
   background: #2d3748;
   color: #4a5568;
 }
 
-:global([data-theme="dark"]) .confirmationCard {
+:global(.theme-dark) .confirmationCard {
   background: #2d3748;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
-:global([data-theme="dark"]) .confirmationItem {
+:global(.theme-dark) .confirmationItem {
   border-bottom-color: #4a5568;
 }
 
-:global([data-theme="dark"]) .confirmationItem label {
+:global(.theme-dark) .confirmationItem label {
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .confirmationItem p {
+:global(.theme-dark) .confirmationItem p {
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .notesInput {
+:global(.theme-dark) .notesInput {
   background: #1a202c;
   border-color: #4a5568;
   color: white;
 }
 
-:global([data-theme="dark"]) .notesInput:focus {
+:global(.theme-dark) .notesInput:focus {
   border-color: #9f7aea;
 }
 
-:global([data-theme="dark"]) .paymentInfo {
+:global(.theme-dark) .paymentInfo {
   background: #1a202c;
 }
 
-:global([data-theme="dark"]) .paymentInfo p {
+:global(.theme-dark) .paymentInfo p {
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .backButton {
+:global(.theme-dark) .backButton {
   background: #4a5568;
   color: #e2e8f0;
 }
 
-:global([data-theme="dark"]) .backButton:hover {
+:global(.theme-dark) .backButton:hover {
   background: #2d3748;
 }
 
-:global([data-theme="dark"]) .quickAction {
+:global(.theme-dark) .quickAction {
   border-color: #4a5568;
   color: #a0aec0;
 }
 
-:global([data-theme="dark"]) .quickAction:hover {
+:global(.theme-dark) .quickAction:hover {
   border-color: #9f7aea;
   color: #9f7aea;
   background: #2d3748;
 }
 
-:global([data-theme="dark"]) .quickActions {
+:global(.theme-dark) .quickActions {
   border-top-color: #4a5568;
 }
 
