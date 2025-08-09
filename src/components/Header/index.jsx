@@ -2,6 +2,7 @@ import { memo, useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useApp } from "src/contexts/AppContext";
+import { createKeyDownHandler } from "src/utils/keyboard";
 import classes from "./Header.module.css";
 
 const NAV_ITEMS = [
@@ -33,12 +34,7 @@ export const Header = memo(() => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleMobileMenuToggle();
-    }
-  };
+  const handleKeyDown = createKeyDownHandler(handleMobileMenuToggle);
 
   const handleEscapeKey = (event) => {
     if (event.key === 'Escape' && mobileMenuOpen) {

@@ -1,28 +1,22 @@
 import { memo } from "react";
 import PropTypes from "prop-types";
+import { createKeyDownHandler } from "src/utils/keyboard";
 import classes from "./Counter.module.css";
 
 const CounterComponent = ({ count, isShow, handleClick, handleDisplay }) => {
-  const handleKeyDown = (handler) => (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handler();
-    }
-  };
-
   return (
     <div className={classes.counter}>
       {isShow ? <h2 tabIndex="0" aria-live="polite">{count}</h2> : null}
-      <button 
-        onClick={handleClick} 
-        onKeyDown={handleKeyDown(handleClick)}
+      <button
+        onClick={handleClick}
+        onKeyDown={createKeyDownHandler(handleClick)}
         aria-label="カウントを増やす"
       >
         ボタン
       </button>
-      <button 
-        onClick={handleDisplay} 
-        onKeyDown={handleKeyDown(handleDisplay)}
+      <button
+        onClick={handleDisplay}
+        onKeyDown={createKeyDownHandler(handleDisplay)}
         aria-label={isShow ? "カウントを非表示にする" : "カウントを表示する"}
       >
         {isShow ? "非表示" : "表示"}
