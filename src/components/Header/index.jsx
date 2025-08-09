@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useEffect, useRef } from "react";
+import { memo, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useApp } from "src/contexts/AppContext";
@@ -34,7 +34,10 @@ export const Header = memo(() => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const handleKeyDown = createKeyDownHandler(handleMobileMenuToggle);
+  const handleKeyDown = useCallback(
+    createKeyDownHandler(handleMobileMenuToggle),
+    [handleMobileMenuToggle]
+  );
 
   const handleEscapeKey = (event) => {
     if (event.key === 'Escape' && mobileMenuOpen) {
