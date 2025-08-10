@@ -102,9 +102,10 @@ const EMOTIONS = {
 };
 
 // プレースホルダー美少女画像データ（Data URL形式）
-// SSR対応のため、画像生成は実行時に行う
+// SSR対応のため、画像生成はクライアントサイドでのみ実行
 const generateCharacterImages = () => {
-  if (typeof document === 'undefined') return null; // SSR対応
+  // SSR時は空のオブジェクトを返す
+  if (typeof window === 'undefined') return null;
   
   return {
     // ベース顔画像（感情別）
@@ -128,8 +129,8 @@ const generateCharacterImages = () => {
 
 // 日本アニメ美少女キャラクター画像生成関数
 function generateAnimeCharacterImage(emotion) {
-  // SSR対応チェック
-  if (typeof document === 'undefined') return '';
+  // SSR対応チェック - クライアントサイドでのみ実行
+  if (typeof window === 'undefined') return '';
   
   // Canvas を使用してプレースホルダー美少女キャラクター画像を生成
   const canvas = document.createElement('canvas');
@@ -469,8 +470,8 @@ function drawStar(ctx, x, y, spikes, outerRadius, innerRadius) {
 
 // 髪の画像生成
 function generateHairImage() {
-  // SSR対応チェック
-  if (typeof document === 'undefined') return '';
+  // SSR対応チェック - クライアントサイドでのみ実行
+  if (typeof window === 'undefined') return '';
   
   const canvas = document.createElement('canvas');
   canvas.width = 400;
@@ -544,8 +545,8 @@ function generateHairImage() {
 
 // アクセサリー画像生成
 function generateAccessoriesImage() {
-  // SSR対応チェック
-  if (typeof document === 'undefined') return '';
+  // SSR対応チェック - クライアントサイドでのみ実行
+  if (typeof window === 'undefined') return '';
   
   const canvas = document.createElement('canvas');
   canvas.width = 400;
@@ -595,8 +596,8 @@ function generateAccessoriesImage() {
 
 // 背景画像生成
 function generateBackgroundImage() {
-  // SSR対応チェック
-  if (typeof document === 'undefined') return '';
+  // SSR対応チェック - クライアントサイドでのみ実行
+  if (typeof window === 'undefined') return '';
   
   const canvas = document.createElement('canvas');
   canvas.width = 400;
@@ -640,6 +641,17 @@ function generateBackgroundImage() {
   return canvas.toDataURL();
 }
 
+// パフォーマンス設定
+const PERFORMANCE_CONFIG = {
+  MAX_PARTICLES: 30, // 最大パーティクル数
+  PARTICLE_INTERVAL: {
+    HIGH_PERFORMANCE: 200,
+    NORMAL: 300, 
+    LOW_PERFORMANCE: 500
+  },
+  FPS_THRESHOLD: 45 // パフォーマンス判定闾値
+};
+
 const SAMPLE_RESPONSES = [
   "やっほー！今日も一緒にがんばろうねっ☆",
   "わぁ、それすごく楽しそうだね〜♪",
@@ -673,62 +685,126 @@ export const AriaCompanion = () => {
   const [particles, setParticles] = useState([]);
   const [time, setTime] = useState(0);
   const [loadedImages, setLoadedImages] = useState({});
+  const [isClient, setIsClient] = useState(false);
   
   const containerRef = useRef(null);
   const animationRef = useRef(null);
   const particleId = useRef(0);
+  const imageLoadAbortController = useRef(null);
 
-  // 画像プリロード
+  // クライアントサイドチェック
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // 画像プリロード（クライアントサイドのみ）
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const abortController = new AbortController();
+    imageLoadAbortController.current = abortController;
+    
     const loadImages = async () => {
       const CHARACTER_IMAGES = generateCharacterImages();
-      if (!CHARACTER_IMAGES) return; // SSR時はスキップ
+      if (!CHARACTER_IMAGES) return;
       
       const images = {};
+      const fallbackDataUrl = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNGRkI2QzEiLz4KPHN2Zz4K';
       
       try {
         // 顔画像をロード
         for (const [emotion, imageData] of Object.entries(CHARACTER_IMAGES.faces)) {
+          if (abortController.signal.aborted) return;
+          
           const img = new Image();
-          img.src = imageData;
-          await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = () => {
-              console.warn(`Failed to load face image for emotion: ${emotion}`);
-              resolve(); // エラーでも処理を続行
+          img.src = imageData || fallbackDataUrl;
+          
+          await new Promise((resolve) => {
+            const timeoutId = setTimeout(() => {
+              console.warn(`Timeout loading face image for emotion: ${emotion}`);
+              img.src = fallbackDataUrl;
+              resolve();
+            }, 5000);
+            
+            img.onload = () => {
+              clearTimeout(timeoutId);
+              resolve();
             };
+            
+            img.onerror = () => {
+              clearTimeout(timeoutId);
+              console.warn(`Failed to load face image for emotion: ${emotion}`);
+              img.src = fallbackDataUrl;
+              resolve();
+            };
+            
+            abortController.signal.addEventListener('abort', () => {
+              clearTimeout(timeoutId);
+              resolve();
+            });
           });
+          
           images[`face_${emotion}`] = img;
         }
         
         // その他の画像をロード
         for (const [type, imageData] of Object.entries(CHARACTER_IMAGES)) {
-          if (type !== 'faces') {
+          if (type !== 'faces' && !abortController.signal.aborted) {
             const img = new Image();
-            img.src = imageData;
-            await new Promise((resolve, reject) => {
-              img.onload = resolve;
-              img.onerror = () => {
-                console.warn(`Failed to load ${type} image`);
-                resolve(); // エラーでも処理を続行
+            img.src = imageData || fallbackDataUrl;
+            
+            await new Promise((resolve) => {
+              const timeoutId = setTimeout(() => {
+                console.warn(`Timeout loading ${type} image`);
+                img.src = fallbackDataUrl;
+                resolve();
+              }, 5000);
+              
+              img.onload = () => {
+                clearTimeout(timeoutId);
+                resolve();
               };
+              
+              img.onerror = () => {
+                clearTimeout(timeoutId);
+                console.warn(`Failed to load ${type} image`);
+                img.src = fallbackDataUrl;
+                resolve();
+              };
+              
+              abortController.signal.addEventListener('abort', () => {
+                clearTimeout(timeoutId);
+                resolve();
+              });
             });
+            
             images[type] = img;
           }
         }
         
-        setLoadedImages(images);
+        if (!abortController.signal.aborted) {
+          setLoadedImages(images);
+        }
       } catch (error) {
         console.error('Error loading images:', error);
       }
     };
     
     loadImages();
-  }, []);
+    
+    // クリーンアップ関数
+    return () => {
+      abortController.abort();
+    };
+  }, [isClient]);
 
-  // 3Dパーティクルシステム
+  // パフォーマンスモニタリング
+  const [performanceLevel, setPerformanceLevel] = useState('NORMAL');
+  const fpsCounter = useRef({ frames: 0, lastTime: 0, fps: 60 });
+  
+  // 3Dパーティクルシステム（パフォーマンス最適化版）
   const createParticle = useCallback(() => {
-    if (!EMOTIONS[emotion].sparkles) return;
+    if (!EMOTIONS[emotion].sparkles || !isClient) return;
     
     const particleTypes = ['heart', 'star', 'sparkle', 'bubble', 'diamond'];
     
@@ -749,17 +825,36 @@ export const AriaCompanion = () => {
       rotationSpeed: (Math.random() - 0.5) * 0.1
     };
     
-    setParticles(prev => [...prev.slice(-30), particle]);
-  }, [emotion]);
+    // パフォーマンスレベルに応じたパーティクル数制限
+    const maxParticles = PERFORMANCE_CONFIG.MAX_PARTICLES;
+    setParticles(prev => [...prev.slice(-maxParticles + 1), particle]);
+  }, [emotion, isClient]);
 
-  // Animation loop
+  // パフォーマンスモニタリングとアニメーションループ
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || !isClient) return;
 
     const animate = (currentTime) => {
+      // FPS計算
+      fpsCounter.current.frames++;
+      if (currentTime - fpsCounter.current.lastTime >= 1000) {
+        fpsCounter.current.fps = fpsCounter.current.frames;
+        fpsCounter.current.frames = 0;
+        fpsCounter.current.lastTime = currentTime;
+        
+        // パフォーマンスレベル調整
+        if (fpsCounter.current.fps < PERFORMANCE_CONFIG.FPS_THRESHOLD) {
+          setPerformanceLevel('LOW_PERFORMANCE');
+        } else if (fpsCounter.current.fps > 55) {
+          setPerformanceLevel('HIGH_PERFORMANCE');
+        } else {
+          setPerformanceLevel('NORMAL');
+        }
+      }
+      
       setTime(currentTime);
       
-      // パーティクル更新
+      // パーティクル更新（パフォーマンス最適化）
       setParticles(prev => {
         const updated = prev.map(particle => ({
           ...particle,
@@ -785,15 +880,16 @@ export const AriaCompanion = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isActive]);
+  }, [isActive, isClient]);
 
-  // パーティクル生成
+  // パーティクル生成（パフォーマンスアダプティブ）
   useEffect(() => {
-    if (!isActive || !EMOTIONS[emotion].sparkles) return;
+    if (!isActive || !EMOTIONS[emotion].sparkles || !isClient) return;
 
-    const interval = setInterval(createParticle, 300);
+    const intervalTime = PERFORMANCE_CONFIG.PARTICLE_INTERVAL[performanceLevel];
+    const interval = setInterval(createParticle, intervalTime);
     return () => clearInterval(interval);
-  }, [isActive, emotion, createParticle]);
+  }, [isActive, emotion, createParticle, performanceLevel, isClient]);
 
   // Auto emotion cycling
   useEffect(() => {
@@ -817,6 +913,26 @@ export const AriaCompanion = () => {
       timestamp: Date.now()
     }]);
   };
+
+  // キーボードイベントハンドラー
+  const handleKeyDown = useCallback((event) => {
+    // 感情切り替えショートカット（Ctrl + 1-9）
+    if (event.ctrlKey && event.key >= '1' && event.key <= '9') {
+      event.preventDefault();
+      const emotions = Object.keys(EMOTIONS);
+      const index = parseInt(event.key) - 1;
+      if (index < emotions.length) {
+        setEmotion(emotions[index]);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isActive) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isActive, handleKeyDown]);
 
   const handleSendMessage = async (text = inputValue) => {
     if (!text.trim()) return;
@@ -869,10 +985,20 @@ export const AriaCompanion = () => {
   const currentEmotion = EMOTIONS[emotion];
 
   return (
-    <div className={classes.container} ref={containerRef}>
+    <div 
+      className={classes.container} 
+      ref={containerRef}
+      role="application"
+      aria-label="Aria Companion - アニメスタイル美少女AIコンパニオン"
+    >
       <div className={classes.stage}>
         {/* 3Dキャラクターレンダリング */}
-        <div className={`${classes.characterContainer} ${classes[emotion]}`}>
+        <div 
+          className={`${classes.characterContainer} ${classes[emotion]}`}
+          role="img"
+          aria-label={`Ariaの現在の感情: ${emotion}`}
+          aria-live="polite"
+        >
           {/* 背景レイヤー（ドレス・体） */}
           <div className={classes.layer}>
             {loadedImages.background && (
@@ -949,15 +1075,26 @@ export const AriaCompanion = () => {
             <button
               onClick={handleActivate}
               className={classes.activateButton}
+              aria-label="Ariaコンパニオンを起動してチャットを始める"
+              type="button"
             >
               ✨ 3D画像ベースAriaを起動する ✨
             </button>
           </div>
         ) : (
-          <div className={classes.emotionIndicator}>
+          <div 
+            className={classes.emotionIndicator}
+            role="status"
+            aria-live="polite"
+            aria-label="感情コントロール"
+          >
             現在の感情: <span style={{ color: currentEmotion.color }}>{emotion}</span>
             <div className={classes.subtitle3d} style={{ fontSize: '0.8rem', marginTop: '5px' }}>3D画像レンダリング・レイヤー分離システム</div>
-            <div className={classes.emotionControls}>
+            <div 
+              className={classes.emotionControls}
+              role="group"
+              aria-label="感情切り替えボタングループ"
+            >
               {Object.keys(EMOTIONS).map(emotionType => (
                 <button
                   key={emotionType}
@@ -965,6 +1102,9 @@ export const AriaCompanion = () => {
                   className={`${classes.emotionButton} ${emotion === emotionType ? classes.active : ''}`}
                   style={{ backgroundColor: EMOTIONS[emotionType].color }}
                   title={`${emotionType} - 3D image rendering`}
+                  aria-label={`感情を${emotionType}に変更`}
+                  aria-pressed={emotion === emotionType}
+                  type="button"
                 >
                   {emotionType === 'happy' ? '😊' : 
                    emotionType === 'excited' ? '🤩' :
@@ -983,8 +1123,17 @@ export const AriaCompanion = () => {
       </div>
 
       {isActive && (
-        <div className={classes.chatInterface}>
-          <div className={classes.messageContainer}>
+        <div 
+          className={classes.chatInterface}
+          role="complementary"
+          aria-label="チャットインターフェース"
+        >
+          <div 
+            className={classes.messageContainer}
+            role="log"
+            aria-label="チャットメッセージ履歴"
+            aria-live="polite"
+          >
             {messages.map(message => (
               <div
                 key={message.id}
@@ -1030,14 +1179,21 @@ export const AriaCompanion = () => {
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="3D画像ベース美少女Ariaにメッセージを送る..."
                 className={classes.messageInput}
+                aria-label="メッセージ入力フィールド"
+                aria-describedby="input-help"
               />
               <button
                 onClick={() => handleSendMessage()}
                 className={classes.sendButton}
                 disabled={!inputValue.trim()}
+                aria-label="メッセージを送信"
+                type="submit"
               >
                 送信
               </button>
+              <div id="input-help" className="sr-only">
+                Enterキーで送信、Ctrl+1-9で感情切り替え
+              </div>
             </div>
           </div>
         </div>
