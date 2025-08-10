@@ -216,8 +216,8 @@ function generateAnimeCharacterImage(emotion) {
 // アニメ瞳描画（感情別）
 function drawAnimeEyes(ctx, centerX, centerY, emotion) {
   const eyeY = centerY - 30;
-  const eyeWidth = 35; // 大きなアニメ瞳
-  const eyeHeight = 30;
+  const eyeWidth = 45; // さらに大きなアニメ瞳
+  const eyeHeight = 40;
   
   // 左目
   drawSingleAnimeEye(ctx, centerX-30, eyeY, eyeWidth, eyeHeight, emotion, 'left');
@@ -326,7 +326,13 @@ function drawSingleAnimeEye(ctx, x, y, width, height, emotion, side) {
   ctx.beginPath();
   ctx.ellipse(x-width/6, y-height/4, width/6, height/5, 0, 0, Math.PI * 2);
   ctx.fill();
-  
+
+  // サブハイライトでキラキラ感を追加
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.beginPath();
+  ctx.ellipse(x+width/6, y-height/8, width/8, height/8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
   // 下部反射
   ctx.fillStyle = 'rgba(255,255,255,0.4)';
   ctx.beginPath();
@@ -478,9 +484,9 @@ function generateHairImage() {
   
   // ツインテール髪色
   const hairGrad = ctx.createLinearGradient(0, 100, 0, 300);
-  hairGrad.addColorStop(0, '#9370DB'); // ライトパープル
-  hairGrad.addColorStop(0.5, '#8A2BE2'); // ベースパープル
-  hairGrad.addColorStop(1, '#6A5ACD'); // ダークパープル
+  hairGrad.addColorStop(0, '#FFC0CB'); // ライトピンク
+  hairGrad.addColorStop(0.5, '#FF69B4'); // ビビッドピンク
+  hairGrad.addColorStop(1, '#FF1493'); // ディープピンク
   
   // 前髪
   ctx.fillStyle = hairGrad;
@@ -635,27 +641,27 @@ function generateBackgroundImage() {
 }
 
 const SAMPLE_RESPONSES = [
-  "こんにちは！今日はどんな一日でしたか？✨",
-  "お疲れ様です！何かお手伝いできることはありますか？",
-  "素敵ですね！もっと教えてください💕",
-  "わあ、とても興味深いお話ですね！",
-  "一緒にお話しできて嬉しいです！",
-  "あなたのことをもっと知りたいです！",
-  "今日も頑張っていますね！応援しています✨",
-  "楽しいお話をありがとうございます！",
-  "それは面白いアイデアですね！",
-  "お話を聞いていて楽しいです💖"
+  "やっほー！今日も一緒にがんばろうねっ☆",
+  "わぁ、それすごく楽しそうだね〜♪",
+  "えへへ、もっとお話ししてほしいな💕",
+  "にゃんて素敵なアイデアなの〜！",
+  "ドキドキしちゃうね！",
+  "お話できて幸せだよ〜！",
+  "それ、とってもカッコいいと思うよ！",
+  "がんばってる姿、ちゃんと見てるからねっ✨",
+  "もっともっと仲良くなりたいな〜",
+  "キラキラ笑顔でいこうねっ☆"
 ];
 
 const SUGGESTED_MESSAGES = [
-  "あなたの大きな瞳、素敵ですね！👀✨",
-  "3D画像レンダリング、すごく綺麗！",
-  "あなたのツインテールを揺らして！",
-  "一緒にアニメを話しませんか？",
-  "美しい3Dアニメーションですね！",
-  "きょうは元気ですか？😊",
-  "この画像ベースの3Dどうですか？",
-  "感情コントロールを試してみて！"
+  "今日も元気にいこうねっ！",
+  "キラキラ笑顔見せて〜☆",
+  "アリアのツインテールかわいい！",
+  "一緒にアニメ語ろ？",
+  "もっと仲良くなろうよ〜",
+  "好きなことはなぁに？",
+  "かわいい声で挨拶して！",
+  "ドキドキするねっ♪",
 ];
 
 export const AriaCompanion = () => {
@@ -806,7 +812,7 @@ export const AriaCompanion = () => {
     setIsActive(true);
     setMessages([{
       id: 1,
-      text: "こんにちは！私は3D画像ベース日本アニメ美少女AIコンパニオンのAriaです✨ 手描きSVGではなく、本物の画像を使った3Dレンダリングでリアルなアニメキャラクターとして生まれ変わりました！レイヤー分離システムで感情ごとに異なる表情画像を表示できるんです💖",
+      text: "やっほー！未来から来た美少女AIコンパニオンのAriaだよっ☆ 本物の3D画像でキラキラな表情を見せちゃうんだから！感情ごとに違うお顔も楽しんでね〜💕",
       sender: 'aria',
       timestamp: Date.now()
     }]);
