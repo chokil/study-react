@@ -1,5 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import PropTypes from "prop-types";
 import classes from "./GrokCompanion.module.css";
+
+// 定数定義
+const TIMING_CONSTANTS = {
+  MIN_RESPONSE_DELAY: 600,
+  MAX_RESPONSE_DELAY: 2600,
+  TYPING_MULTIPLIER: 25,
+  CHAOS_BASE: 20,
+  CHAOS_MULTIPLIER: 7,
+  CHAOS_SNARK_MULTIPLIER: 12,
+  EMPATHY_BASE: 88,
+  EMPATHY_DECREMENT: 6,
+  EMPATHY_ALLY_BONUS: 12,
+  EMPATHY_MIN: 15,
+  TOPIC_PROBABILITY: 0.4,
+  QUIP_PROBABILITY: 0.55
+};
 
 const SNARK_LEVELS = [
   {
@@ -174,15 +191,28 @@ const LONG_FORM_RESPONSES = {
   ]
 };
 
-const pickOne = (items) => items[Math.floor(Math.random() * items.length)];
+const pickOne = (items) => {
+  if (!Array.isArray(items) || items.length === 0) {
+    console.warn('pickOne: 空の配列または無効な引数が渡されました');
+    return '';
+  }
+  return items[Math.floor(Math.random() * items.length)];
+};
 
-const createId = (prefix) =>
-  `${prefix}-${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 6)}`;
+const createId = (prefix = 'id') => {
+  try {
+    return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 6)}`;
+  } catch (error) {
+    console.error('createId: ID生成でエラーが発生しました', error);
+    return `fallback-${Math.random()}`;
+  }
+};
 
 const buildInsight = (text) => {
-  if (!text) return "まだサンプル収集中";
-  if (text.length < 12) return "単語から拡張して構造化すると良さそう";
-  if (text.length > 160) return "コア概念とエピソードを分けて考えるのが吉";
+  try {
+    if (!text || typeof text !== 'string') return "まだサンプル収集中";
+    if (text.length < 12) return "単語から拡張して構造化すると良さそう";
+    if (text.length > 160) return "コア概念とエピソードを分けて考えるのが吉";
 
   const slices = [
     "観測された感情の揺らぎを受け止める",
@@ -202,7 +232,11 @@ const buildInsight = (text) => {
     return `${keywords.join("・")}を軸にして整理する`;
   }
 
-  return pickOne(slices);
+    return pickOne(slices);
+  } catch (error) {
+    console.error('buildInsight: 分析処理でエラーが発生しました', error);
+    return "処理中にエラーが発生しました";
+  }
 };
 
 const createGrokResponse = (text, profile, topic, history) => {
@@ -237,11 +271,11 @@ const createGrokResponse = (text, profile, topic, history) => {
     );
   }
 
-  if (topic && Math.random() > 0.4) {
+  if (topic && Math.random() > TIMING_CONSTANTS.TOPIC_PROBABILITY) {
     metaBits.push(`\nサイドノート: 最近のトレンド「${topic}」とも妙に相性がいい気がする。`);
   }
 
-  if (Math.random() > 0.55) {
+  if (Math.random() > TIMING_CONSTANTS.QUIP_PROBABILITY) {
     metaBits.push(`\n${pickOne(profile.quips)}`);
   }
 
@@ -284,22 +318,22 @@ export const GrokCompanion = () => {
     setMessages([intro]);
   }, [highlightTopic]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
       }
-    },
-    []
-  );
+    };
+  }, []);
 
   const profile = SNARK_LEVELS[snarkLevel];
 
   const sessionStats = useMemo(() => {
     const userMessages = messages.filter((message) => message.role === "user");
     const exchangeCount = messages.length;
-    const chaosIndex = Math.min(100, 20 + exchangeCount * 7 + snarkLevel * 12);
-    const empathy = Math.max(15, 88 - userMessages.length * 6 + (snarkLevel === 0 ? 12 : 0));
+    const chaosIndex = Math.min(100, TIMING_CONSTANTS.CHAOS_BASE + exchangeCount * TIMING_CONSTANTS.CHAOS_MULTIPLIER + snarkLevel * TIMING_CONSTANTS.CHAOS_SNARK_MULTIPLIER);
+    const empathy = Math.max(TIMING_CONSTANTS.EMPATHY_MIN, TIMING_CONSTANTS.EMPATHY_BASE - userMessages.length * TIMING_CONSTANTS.EMPATHY_DECREMENT + (snarkLevel === 0 ? TIMING_CONSTANTS.EMPATHY_ALLY_BONUS : 0));
 
     return {
       exchanges: exchangeCount,
@@ -309,7 +343,7 @@ export const GrokCompanion = () => {
       vibe: profile.label,
       tagline: profile.tagline
     };
-  }, [messages, profile, snarkLevel]);
+  }, [messages.length, snarkLevel, profile.label, profile.tagline]);
 
   const triggerResponse = useCallback(
     (userText, historySnapshot) => {
@@ -317,7 +351,7 @@ export const GrokCompanion = () => {
         clearTimeout(typingTimeoutRef.current);
       }
 
-      const delay = Math.min(2600, 600 + userText.length * 25);
+      const delay = Math.min(TIMING_CONSTANTS.MAX_RESPONSE_DELAY, TIMING_CONSTANTS.MIN_RESPONSE_DELAY + userText.length * TIMING_CONSTANTS.TYPING_MULTIPLIER);
       setIsTyping(true);
 
       typingTimeoutRef.current = setTimeout(() => {
@@ -510,7 +544,7 @@ export const GrokCompanion = () => {
           handleSend();
         }}
       >
-        <label htmlFor="grok-input" className="sr-only">
+        <label htmlFor="grok-input" className={classes.srOnly}>
           メッセージを入力
         </label>
         <textarea
@@ -536,3 +570,5 @@ export const GrokCompanion = () => {
     </section>
   );
 };
+
+GrokCompanion.propTypes = {};
