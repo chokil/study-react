@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import PropTypes from "prop-types";
 import classes from "./GrokCompanion.module.css";
 
 const SNARK_LEVELS = [
@@ -174,10 +175,31 @@ const LONG_FORM_RESPONSES = {
   ]
 };
 
-const pickOne = (items) => items[Math.floor(Math.random() * items.length)];
+const pickOne = (items) => {
+  if (!items || items.length === 0) return null;
+  // よりセキュアなランダム選択
+  if (typeof window !== 'undefined' && window.crypto) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return items[array[0] % items.length];
+  }
+  return items[Math.floor(Math.random() * items.length)];
+};
 
-const createId = (prefix) =>
-  `${prefix}-${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 6)}`;
+const createId = (prefix) => {
+  // 暗号学的に安全なランダム文字列生成
+  const array = new Uint8Array(8);
+  if (typeof window !== 'undefined' && window.crypto) {
+    window.crypto.getRandomValues(array);
+  } else {
+    // フォールバック: Node.js環境用
+    for (let i = 0; i < array.length; i++) {
+      array[i] = Math.floor(Math.random() * 256);
+    }
+  }
+  const randomHex = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return `${prefix}-${Date.now().toString(36)}-${randomHex.slice(0, 6)}`;
+};
 
 const buildInsight = (text) => {
   if (!text) return "まだサンプル収集中";
@@ -296,20 +318,27 @@ export const GrokCompanion = () => {
   const profile = SNARK_LEVELS[snarkLevel];
 
   const sessionStats = useMemo(() => {
-    const userMessages = messages.filter((message) => message.role === "user");
+    // パフォーマンス最適化: 一度のループで必要な値を計算
+    let userMessageCount = 0;
+    for (let i = 0; i < messages.length; i++) {
+      if (messages[i].role === "user") {
+        userMessageCount++;
+      }
+    }
+    
     const exchangeCount = messages.length;
     const chaosIndex = Math.min(100, 20 + exchangeCount * 7 + snarkLevel * 12);
-    const empathy = Math.max(15, 88 - userMessages.length * 6 + (snarkLevel === 0 ? 12 : 0));
+    const empathy = Math.max(15, 88 - userMessageCount * 6 + (snarkLevel === 0 ? 12 : 0));
 
     return {
       exchanges: exchangeCount,
-      questions: userMessages.length,
+      questions: userMessageCount,
       chaosIndex,
       empathy,
       vibe: profile.label,
       tagline: profile.tagline
     };
-  }, [messages, profile, snarkLevel]);
+  }, [messages.length, snarkLevel, profile.label, profile.tagline]);
 
   const triggerResponse = useCallback(
     (userText, historySnapshot) => {
@@ -317,7 +346,7 @@ export const GrokCompanion = () => {
         clearTimeout(typingTimeoutRef.current);
       }
 
-      const delay = Math.min(2600, 600 + userText.length * 25);
+      const delay = userText.length > 80 ? 2600 : 600 + userText.length * 25;
       setIsTyping(true);
 
       typingTimeoutRef.current = setTimeout(() => {
@@ -510,7 +539,7 @@ export const GrokCompanion = () => {
           handleSend();
         }}
       >
-        <label htmlFor="grok-input" className="sr-only">
+        <label htmlFor="grok-input" className={classes.srOnly}>
           メッセージを入力
         </label>
         <textarea
@@ -535,4 +564,8 @@ export const GrokCompanion = () => {
       </form>
     </section>
   );
+};
+
+GrokCompanion.propTypes = {
+  // 現在はpropsを受け取らないが、将来の拡張性のために定義
 };
