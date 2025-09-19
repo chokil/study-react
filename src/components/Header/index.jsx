@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
   { href: "/about", label: "About" },
   { href: "/aria", label: "✨ AI Aria" },
+  { href: "/grok", label: "🛰 Grokコンパニオン" },
   { href: "/reservation", label: "予約", requireAuth: true },
   { href: "/ticket-purchase", label: "チケット購入" },
   { href: "/coupon", label: "クーポン" },
