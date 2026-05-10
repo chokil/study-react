@@ -9,24 +9,23 @@ const NAV_ITEMS = [
   { href: "/", label: "ホーム" },
   { href: "/about", label: "About" },
   { href: "/aria", label: "✨ AI Aria" },
+  { href: "/grok", label: "⚡ Grok" },
   { href: "/reservation", label: "予約", requireAuth: true },
   { href: "/ticket-purchase", label: "チケット購入" },
   { href: "/coupon", label: "クーポン" },
 ];
 
-const ADMIN_NAV_ITEMS = [
-  { href: "/admin/tickets", label: "チケット管理" },
-];
+const ADMIN_NAV_ITEMS = [{ href: "/admin/tickets", label: "チケット管理" }];
 
 export const Header = memo(() => {
   const router = useRouter();
   const { state, dispatch } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileNavRef = useRef(null);
-  
+
   const handleLogout = () => {
-    dispatch({ type: 'LOGOUT' });
-    router.push('/');
+    dispatch({ type: "LOGOUT" });
+    router.push("/");
     setMobileMenuOpen(false);
   };
 
@@ -36,11 +35,11 @@ export const Header = memo(() => {
 
   const handleKeyDown = useCallback(
     createKeyDownHandler(handleMobileMenuToggle),
-    [handleMobileMenuToggle]
+    [handleMobileMenuToggle],
   );
 
   const handleEscapeKey = (event) => {
-    if (event.key === 'Escape' && mobileMenuOpen) {
+    if (event.key === "Escape" && mobileMenuOpen) {
       setMobileMenuOpen(false);
     }
   };
@@ -48,25 +47,29 @@ export const Header = memo(() => {
   // Outside click handling and focus management
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (mobileNavRef.current && !mobileNavRef.current.contains(event.target)) {
+      if (
+        mobileNavRef.current &&
+        !mobileNavRef.current.contains(event.target)
+      ) {
         setMobileMenuOpen(false);
       }
     };
 
     if (mobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscapeKey);
-      
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
+
       // Focus management - focus first focusable element in mobile nav
-      const firstFocusableElement = mobileNavRef.current?.querySelector('a, button');
+      const firstFocusableElement =
+        mobileNavRef.current?.querySelector("a, button");
       if (firstFocusableElement) {
         firstFocusableElement.focus();
       }
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
     };
   }, [mobileMenuOpen]);
 
@@ -74,11 +77,11 @@ export const Header = memo(() => {
     setMobileMenuOpen(false);
   };
 
-  const isAdmin = useMemo(() => 
-    state.user?.email?.endsWith('@admin.com'), 
-    [state.user?.email]
+  const isAdmin = useMemo(
+    () => state.user?.email?.endsWith("@admin.com"),
+    [state.user?.email],
   );
-  
+
   return (
     <header className={classes.header}>
       {/* Desktop Navigation */}
@@ -93,16 +96,21 @@ export const Header = memo(() => {
             </Link>
           );
         })}
-        {isAdmin && ADMIN_NAV_ITEMS.map((item) => (
-          <Link key={item.href} href={item.href} className={`${classes.anchor} ${classes.adminLink}`}>
-            {item.label}
-          </Link>
-        ))}
+        {isAdmin &&
+          ADMIN_NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`${classes.anchor} ${classes.adminLink}`}
+            >
+              {item.label}
+            </Link>
+          ))}
       </nav>
 
       {/* Mobile Hamburger Menu */}
-      <button 
-        className={`${classes.hamburger} ${mobileMenuOpen ? classes.open : ''}`}
+      <button
+        className={`${classes.hamburger} ${mobileMenuOpen ? classes.open : ""}`}
         onClick={handleMobileMenuToggle}
         onKeyDown={handleKeyDown}
         aria-expanded={mobileMenuOpen}
@@ -132,10 +140,10 @@ export const Header = memo(() => {
       </div>
 
       {/* Mobile Navigation Menu */}
-      <nav 
+      <nav
         ref={mobileNavRef}
         id="mobile-nav"
-        className={`${classes.mobileNav} ${mobileMenuOpen ? classes.open : ''}`}
+        className={`${classes.mobileNav} ${mobileMenuOpen ? classes.open : ""}`}
         role="navigation"
         aria-label="モバイルナビゲーション"
       >
@@ -144,9 +152,9 @@ export const Header = memo(() => {
             return null;
           }
           return (
-            <Link 
-              key={item.href} 
-              href={item.href} 
+            <Link
+              key={item.href}
+              href={item.href}
               className={classes.mobileNavItem}
               onClick={handleMobileNavClick}
             >
@@ -154,17 +162,18 @@ export const Header = memo(() => {
             </Link>
           );
         })}
-        {isAdmin && ADMIN_NAV_ITEMS.map((item) => (
-          <Link 
-            key={item.href} 
-            href={item.href} 
-            className={classes.mobileNavItem}
-            onClick={handleMobileNavClick}
-          >
-            {item.label}
-          </Link>
-        ))}
-        
+        {isAdmin &&
+          ADMIN_NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={classes.mobileNavItem}
+              onClick={handleMobileNavClick}
+            >
+              {item.label}
+            </Link>
+          ))}
+
         {/* Mobile Auth Section */}
         <div className={classes.mobileAuthSection}>
           {state.user?.isLoggedIn ? (
@@ -175,7 +184,11 @@ export const Header = memo(() => {
               </button>
             </>
           ) : (
-            <Link href="/login" className={classes.loginButton} onClick={handleMobileNavClick}>
+            <Link
+              href="/login"
+              className={classes.loginButton}
+              onClick={handleMobileNavClick}
+            >
               ログイン
             </Link>
           )}
