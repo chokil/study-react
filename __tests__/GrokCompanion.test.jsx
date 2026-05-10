@@ -190,4 +190,41 @@ describe("GrokCompanion", () => {
     // Verify crypto.getRandomValues was called for ID generation
     expect(mockCrypto.getRandomValues).toHaveBeenCalled();
   });
+
+  test("handles error cases in memory extraction gracefully", () => {
+    render(<GrokCompanion />);
+
+    const textarea = screen.getByLabelText("メッセージを入力");
+    
+    // 異常な入力ケースをテスト
+    const maliciousInputs = [
+      "覚えて: <script>alert('xss')</script>",
+      "覚えて: " + "a".repeat(300), // 異常に長い入力
+    ];
+
+    maliciousInputs.forEach((input) => {
+      fireEvent.change(textarea, { target: { value: input } });
+      fireEvent.keyDown(textarea, { key: "Enter" });
+      // エラーが発生してもクラッシュしないことを確認
+      expect(screen.getByRole("log")).toBeInTheDocument();
+    });
+  });
+
+  test("properly cleans up timeouts on component unmount", () => {
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    
+    const { unmount } = render(<GrokCompanion />);
+    
+    const textarea = screen.getByLabelText("メッセージを入力");
+    fireEvent.change(textarea, { target: { value: "テスト" } });
+    fireEvent.keyDown(textarea, { key: "Enter" });
+
+    // コンポーネントをアンマウント
+    unmount();
+
+    // clearTimeoutが呼ばれることを確認
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    
+    clearTimeoutSpy.mockRestore();
+  });
 });

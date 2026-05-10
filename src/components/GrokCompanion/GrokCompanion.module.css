@@ -333,7 +333,11 @@
 .topicButton:hover,
 .topicButton:focus-visible {
   background: rgba(255, 255, 255, 0.12);
-  outline: none;
+}
+
+.topicButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .chatWindow {
@@ -457,11 +461,16 @@
   cursor: pointer;
 }
 
-.quickButton:hover,
+.quickButton:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .quickButton:focus-visible {
   transform: translateY(-1px);
   background: rgba(255, 255, 255, 0.12);
-  outline: none;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .inputArea {
@@ -542,12 +551,17 @@
 }
 
 .sendButton:not(:disabled):hover,
+.clearButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(125, 107, 255, 0.4);
+}
+
 .sendButton:not(:disabled):focus-visible,
-.clearButton:hover,
 .clearButton:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(125, 107, 255, 0.4);
-  outline: none;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 @media (max-width: 768px) {

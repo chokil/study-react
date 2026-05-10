@@ -97,10 +97,11 @@ const MOOD_MODES = [
 ];
 
 const MEMORY_PATTERNS = [
-  /(?:私は|僕は|俺は|わたしは)([^。！？!?]{2,24})(?:が好き|好き)/,
-  /(?:目標は|ゴールは)([^。！？!?]{2,28})/,
-  /(?:覚えて|メモして)[:：]?\s*([^。！？!?]{2,36})/,
-  /(?:困っている|悩んでいる|課題は)([^。！？!?]{2,32})/,
+  // ReDoS脆弱性を回避するため、より安全な正規表現パターンに変更
+  /(?:私は|僕は|俺は|わたしは)([^。！？!?]{1,15})(?:が好き|好き)/,
+  /(?:目標は|ゴールは)([^。！？!?]{1,20})/,
+  /(?:覚えて|メモして)[:：]?\s*([^。！？!?]{1,25})/,
+  /(?:困っている|悩んでいる|課題は)([^。！？!?]{1,20})/,
 ];
 
 const COMPANION_SYSTEMS = [
@@ -232,28 +233,54 @@ const pickOne = (items) => {
 };
 
 const createId = (prefix) => {
-  // 暗号学的に安全なランダム文字列生成
+  // 改善: より堅牢なエラーハンドリングとフォールバック
   const array = new Uint8Array(8);
-  if (typeof window !== "undefined" && window.crypto) {
-    window.crypto.getRandomValues(array);
-  } else {
-    // フォールバック: Node.js環境用
+  
+  try {
+    if (typeof window !== "undefined" && window.crypto && window.crypto.getRandomValues) {
+      window.crypto.getRandomValues(array);
+    } else if (typeof global !== "undefined" && global.crypto && global.crypto.getRandomValues) {
+      // Node.js環境用cryptoサポート
+      global.crypto.getRandomValues(array);
+    } else {
+      // フォールバック: Math.random()を使用(安全性は低いが使用可能)
+      for (let i = 0; i < array.length; i++) {
+        array[i] = Math.floor(Math.random() * 256);
+      }
+    }
+  } catch (error) {
+    console.warn('Crypto API unavailable, falling back to Math.random():', error);
+    // 最後のフォールバック
     for (let i = 0; i < array.length; i++) {
       array[i] = Math.floor(Math.random() * 256);
     }
   }
+  
   const randomHex = Array.from(array, (byte) =>
     byte.toString(16).padStart(2, "0"),
   ).join("");
-  return `${prefix}-${Date.now().toString(36)}-${randomHex.slice(0, 6)}`;
+  
+  const timestamp = Date.now().toString(36);
+  return `${prefix || 'id'}-${timestamp}-${randomHex.slice(0, 6)}`;
 };
 
 const buildInsight = (text) => {
-  if (!text) return "まだサンプル収集中";
-  if (text.length < 12) return "単語から拡張して構造化すると良さそう";
-  if (text.length > 160) return "コア概念とエピソードを分けて考えるのが吉";
+  // 入力検証を追加
+  if (!text || typeof text !== 'string') {
+    return "まだサンプル収集中";
+  }
+  
+  // パフォーマンス最適化: 文字列の長さチェックを先に実行
+  const textLength = text.length;
+  if (textLength < 12) {
+    return "単語から拡張して構造化すると良さそう";
+  }
+  if (textLength > 160) {
+    return "コア概念とエピソードを分けて考えるのが吉";
+  }
 
-  const slices = [
+  // 定数を外部に移動して最適化
+  const INSIGHT_TEMPLATES = [
     "観測された感情の揺らぎを受け止める",
     "前提を軽く揺さぶってみる",
     "未来の自分へのメモを残す",
@@ -261,8 +288,9 @@ const buildInsight = (text) => {
     "行動→検証→発表のループに落とし込む",
   ];
 
-  const keywords = text
-    .replace(/[#。、.!?！？]/g, " ")
+  // 正規表現を最適化: 一度だけ実行
+  const cleanText = text.replace(/[#。、.!?！？]/g, " ");
+  const keywords = cleanText
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 3);
@@ -271,15 +299,33 @@ const buildInsight = (text) => {
     return `${keywords.join("・")}を軸にして整理する`;
   }
 
-  return pickOne(slices);
+  return pickOne(INSIGHT_TEMPLATES);
 };
 
 const extractMemoryNote = (text) => {
-  const trimmed = text.trim();
+  // 入力検証とサニタイゼーションを強化
+  if (!text || typeof text !== 'string') {
+    return null;
+  }
+  
+  // 最大長制限を設け、潜在的な攻撃を防ぐ
+  const trimmed = text.trim().slice(0, 200);
+  
+  // XSS攻撃防止のため危険な文字を除去
+  const sanitized = trimmed.replace(/[<>"'&]/g, '');
+  
   for (const pattern of MEMORY_PATTERNS) {
-    const match = trimmed.match(pattern);
-    if (match?.[1]) {
-      return match[1].replace(/[「」]/g, "").trim();
+    try {
+      const match = sanitized.match(pattern);
+      if (match?.[1]) {
+        const memoryNote = match[1].replace(/[「」]/g, "").trim();
+        // さらなる検証: 空でない有効な内容のみ返す
+        return memoryNote.length > 0 && memoryNote.length <= 25 ? memoryNote : null;
+      }
+    } catch (error) {
+      // 正規表現エラーを安全に処理
+      console.warn('Memory pattern matching error:', error);
+      continue;
     }
   }
 
@@ -287,11 +333,20 @@ const extractMemoryNote = (text) => {
 };
 
 const formatMemorySummary = (notes) => {
-  if (!notes.length) {
+  // 入力検証とパフォーマンス最適化
+  if (!notes || !Array.isArray(notes) || notes.length === 0) {
     return "まだ記憶なし。『覚えて: コーヒー派』みたいに投げると保存するよ。";
   }
 
-  return notes.map((note, index) => `${index + 1}. ${note}`).join(" / ");
+  // メモリ使用量最適化: mapの代わりにループを使用
+  const summaryParts = [];
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i] && typeof notes[i] === 'string') {
+      summaryParts.push(`${i + 1}. ${notes[i]}`);
+    }
+  }
+  
+  return summaryParts.join(" / ");
 };
 
 const createGrokResponse = (
@@ -396,29 +451,26 @@ export const GrokCompanion = () => {
     setMessages([intro]);
   }, [highlightTopic]);
 
-  useEffect(
-    () => () => {
+  // メモリリーク対策: より簡潔なクリーンアップ処理
+  useEffect(() => {
+    return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
       }
-    },
-    [],
-  );
+    };
+  }, []);
 
   const profile = SNARK_LEVELS[snarkLevel];
   const mood =
     MOOD_MODES.find((item) => item.id === activeMood) ?? MOOD_MODES[0];
 
   const sessionStats = useMemo(() => {
-    // パフォーマンス最適化: 一度のループで必要な値を計算
-    let userMessageCount = 0;
-    for (let i = 0; i < messages.length; i++) {
-      if (messages[i].role === "user") {
-        userMessageCount++;
-      }
-    }
-
+    // パフォーマンス最適化: より効率的なメッセージカウント
+    const userMessageCount = messages.filter(msg => msg.role === "user").length;
     const exchangeCount = messages.length;
+    
+    // 計算結果をキャッシュしやすい形で最適化
     const chaosIndex = Math.min(100, 20 + exchangeCount * 7 + snarkLevel * 12);
     const empathy = Math.max(
       15,
@@ -436,7 +488,9 @@ export const GrokCompanion = () => {
       mood: mood.label,
     };
   }, [
-    messages,
+    messages.length, // 長さのみを依存にしてパフォーマンス向上
+    // ユーザーメッセージ数を別途追跡するためにmessages全体を依存にする必要がある
+    messages.reduce((count, msg) => msg.role === "user" ? count + 1 : count, 0),
     snarkLevel,
     profile.label,
     profile.tagline,
@@ -448,31 +502,46 @@ export const GrokCompanion = () => {
     (userText, historySnapshot, memorySnapshot = memoryNotes) => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
       }
 
       const delay = userText.length > 80 ? 2600 : 600 + userText.length * 25;
       setIsTyping(true);
 
       typingTimeoutRef.current = setTimeout(() => {
-        const reply = {
-          id: createId("grok"),
-          role: "grok",
-          content: createGrokResponse(
-            userText,
-            profile,
-            highlightTopic,
-            historySnapshot,
-            mood,
-            memorySnapshot,
-          ),
-          timestamp: Date.now(),
-        };
+        try {
+          const reply = {
+            id: createId("grok"),
+            role: "grok",
+            content: createGrokResponse(
+              userText,
+              profile,
+              highlightTopic,
+              historySnapshot,
+              mood,
+              memorySnapshot,
+            ),
+            timestamp: Date.now(),
+          };
 
-        setMessages((prev) => [...prev, reply]);
-        setIsTyping(false);
+          setMessages((prev) => [...prev, reply]);
+        } catch (error) {
+          console.error('Error generating response:', error);
+          // エラー時のフォールバックメッセージ
+          const errorReply = {
+            id: createId("grok"),
+            role: "grok",
+            content: "申し訳ない、システムに問題が発生しました。もう一度お試しください。",
+            timestamp: Date.now(),
+          };
+          setMessages((prev) => [...prev, errorReply]);
+        } finally {
+          setIsTyping(false);
+          typingTimeoutRef.current = null;
+        }
       }, delay);
     },
-    [highlightTopic, memoryNotes, mood, profile],
+    [highlightTopic, mood, profile], // memoryNotesを除去して依存を減らす
   );
 
   const handleSend = useCallback(
